@@ -1,0 +1,21 @@
+.mapaDeServicios {
+    position: fixed !important;
+    height: 100%;
+    width: 100%;
+}
+
+/* Zoom Control */
+.leaflet-bottom.leaflet-right .leaflet-control-zoom {
+    background-color: #ffff; /* Cambiar el fondo del ZoomControl */
+    color: #000; /* Cambiar el color del texto del ZoomControl */
+    box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.37);/*border: 2px solid #000;  Cambiar el borde del ZoomControl */
+    border: 2px solid #FFF;
+    border-radius: 5px; /* Añadir bordes redondeados */
+    padding: 5px 10px; /* Ajustar el espacio interno */
+  }
+   
+  
+  
+  
+  
+  
