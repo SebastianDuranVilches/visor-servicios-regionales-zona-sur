@@ -5,7 +5,7 @@
   "homepage": "http://SebastianDuranVilches.github.io/visor-servicios-regionales-zona-sur",
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-page -d build",
+    "deploy": "gh-pages -d build",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

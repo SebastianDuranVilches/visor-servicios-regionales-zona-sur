@@ -20,19 +20,31 @@ export default class Grafico extends React.Component {
               ranges: [
                 {
                   from: 0,
-                  to: 50,
-                  color: '#D9534F',
+                  to: 19,
+                  color: '#D953FF',
                   name: 'Low',
                 },
                 {
-                  from: 51,
-                  to: 100,
-                  color: '#F9C851',
+                  from: 20,
+                  to: 39,
+                  color: '#D9534F',
+                  name: 'Low Medium',
+                },
+                {
+                  from: 40,
+                  to: 59,
+                  color: '#F9C8F1',
                   name: 'Medium',
                 },
                 {
-                  from: 101,
-                  to: 150,
+                  from: 60,
+                  to: 79,
+                  color: '#F9C851',
+                  name: 'High Medium',
+                },
+                {
+                  from: 80,
+                  to: 100,
                   color: '#5CB85C',
                   name: 'High',
                 },
@@ -48,26 +60,34 @@ export default class Grafico extends React.Component {
         },
         xaxis: {
           type: 'category',
-          categories: ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10'],
+          categories: ['CAMAS HOSPITALARIAS', 'CHILEXPRESS', 'INDAP', 'SAG', 'CAPREDENA'],
         },
       },
-      series: this.generateRandomData(),
+      series: this.generateRandomData(props),
     };
   }
 
-  generateRandomData = () => {
-    const cities = ['Santiago', 'Valparaíso', 'Concepción', 'Antofagasta', 'La Serena'];
-    const features = ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10'];
+  generateRandomData = (props) => {
+    //const cities = ['Santiago', 'Valparaíso', 'Concepción', 'Antofagasta', 'La Serena'];
+    //const features = ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10'];
     const data = [];
+    const cities = [];
+
+    for (let i = 0; i < 5; i++) {
+      cities.push(props.ciudades[i])
+    };
 
     for (let i = 0; i < cities.length; i++) {
       const cityData = [];
-      for (let j = 0; j < features.length; j++) {
-        cityData.push(Math.floor(Math.random() * 150)); // Generate a random value between 0 and 150
-      }
+      cityData.push(props.servicios[i]["CAMAS HOSPITALARIAS"]);
+      cityData.push(props.servicios[i]["CHILEXPRESS"]);
+      cityData.push(this.props.servicios[i]["INDAP"]);
+      cityData.push(this.props.servicios[i]["SAG"]);
+      cityData.push(this.props.servicios[i]["CAPREDENA"]);
       data.push({ name: cities[i], data: cityData });
     }
 
+    console.log(data);
     return data;
   };
   render() {
