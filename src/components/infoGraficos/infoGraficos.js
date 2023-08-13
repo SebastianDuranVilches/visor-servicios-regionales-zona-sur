@@ -9,7 +9,6 @@ import "./infoGraficos.css";
 const Grafico = dynamic(() => import("./grafico"), { ssr: false });
 
 export default class InfoGraficos extends React.Component {
-
   constructor(props) {
     super(props);
   }
@@ -32,7 +31,43 @@ export default class InfoGraficos extends React.Component {
               <option value="2">Los Ríos</option>
               <option value="3">Araucanía</option>
             </Form.Select>
-            <Grafico ciudades={this.props.ciudades} servicios={this.props.servicios} />
+
+            <div className="m-2 filtro-servicios">
+              <Form.Check // prettier-ignore
+                type={"checkbox"}
+                id={`default-checkbox`}
+                label={`Camas hospitalarias`}
+                className="mx-2"
+              />
+              <Form.Check // prettier-ignore
+                type={"checkbox"}
+                id={`default-checkbox`}
+                label={`Chilexpress`}
+                className="mx-2"
+              />
+              <Form.Check // prettier-ignore
+                type={"checkbox"}
+                id={`default-checkbox`}
+                label={`INDAP`}
+                className="mx-2"
+              />
+              <Form.Check // prettier-ignore
+                type={"checkbox"}
+                id={`default-checkbox`}
+                label={`SAG`}
+                className="mx-2"
+              />
+              <Form.Check // prettier-ignore
+                type={"checkbox"}
+                id={`default-checkbox`}
+                label={`CAPREDENA`}
+                className="mx-2"
+              />
+            </div>
+            <Grafico
+              ciudades={this.props.ciudades}
+              servicios={this.props.servicios}
+            />
           </Col>
         </Row>
       </Container>

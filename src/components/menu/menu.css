@@ -30,6 +30,7 @@ body {
     transition: opacity 0.1s 0s, width 0.5s 0s;
 }
 
+
 .navbarVisuality .logo{
     object-fit: cover;
     position: relative;
@@ -61,9 +62,9 @@ body {
 
 .navbarVisuality-details h5 {
     opacity:1;
-    width: 201px;
+    width: 205px;
     height: 24px;
-    transition: opacity 0.2s 0.5s, width 0s 0.5s;
+    transition:  width 0.5s 0s , opacity 0.5s 0.5s;
 }
 
 .navbarVisuality-details .logo{
@@ -135,10 +136,40 @@ body {
     align-items: center;
 }
 
+Button {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0px;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .icons-navbar p {
     margin-bottom: 0;
 }
 
 .icons-navbar::hover{
     color: #696969;
+}
+
+/* Agrega estos estilos al final de tu archivo CSS */
+.icons-navbar svg {
+    margin-left: 0px; /* Espacio entre el texto y la imagen */
+  }
+  
+.icons-navbar h5 {
+    margin: 0; /* Elimina el margen por defecto del h5 */
+  }
+
+.btn-dark {
+    display: flex;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.btn-info{
+    display: flex;
+    padding-left: 8px;
+    padding-right: 8px;
 }

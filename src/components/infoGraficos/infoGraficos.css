@@ -10,6 +10,10 @@
     padding: 10px;
 }
 
+.filtro-servicios{
+    display:flex;
+}
+
 @media screen and (max-width: 1200px) {
     .info-container {
         padding-left: 100px;
@@ -21,3 +25,4 @@
     z-index: 2;
 
 }
+

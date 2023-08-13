@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import React from "react";
-import MenuGraficos from "../components/menuGraficos/menuGraficos";
+import Menu from "../components/menu/menu";
 import InfoGraficos from "@/components/infoGraficos/infoGraficos";
 
 const MapaDeServicios = dynamic(
@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <>
       <div className="d-flex">
-        <MenuGraficos/>
+        <Menu/>
         <MapaDeServicios />
       </div>
       <InfoGraficos ciudades={ciudades} servicios={servicios}/>
