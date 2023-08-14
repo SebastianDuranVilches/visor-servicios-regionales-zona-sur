@@ -2,6 +2,7 @@
   "name": "visor-servicios",
   "version": "0.1.0",
   "private": true,
+  "author": "Sebastián Andrés Durán Vilches",
   "homepage": "http://SebastianDuranVilches.github.io/visor-servicios-regionales-zona-sur",
   "scripts": {
     "predeploy": "npm run build",
