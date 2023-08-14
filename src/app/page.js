@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <>
       <div className="d-flex">
-        <Menu/>
+        <Menu data={data}/>
         <MapaDeServicios />
       </div>
       <InfoGraficos ciudades={ciudades} servicios={servicios}/>

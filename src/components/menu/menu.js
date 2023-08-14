@@ -2,6 +2,8 @@ import React from "react";
 import { useState } from "react";
 import "./menu.css";
 import { Nav, Button, Container } from "react-bootstrap";
+import ExcelJS from "exceljs";
+
 
 export default class Menu extends React.Component {
   constructor(props) {
@@ -9,7 +11,41 @@ export default class Menu extends React.Component {
     this.state = {
       menuDetails: false,
     };
+    this.descargarExcel = this.descargarExcel.bind(this);
   }
+
+  descargarExcel = async () => {
+    const { data } = this.props;
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Datos");
+
+    // Agregar encabezados
+    const headers = Object.keys(data[0]);
+    worksheet.addRow(headers);
+
+    // Agregar filas de datos
+    data.forEach(item => {
+      worksheet.addRow(Object.values(item));
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "datos.xlsx";
+    link.click();
+  };
+
+  redirigirAExterna = () => {
+    window.location.href = "https://www.google.com";
+  };
+
 
   render() {
     return (
@@ -30,7 +66,7 @@ export default class Menu extends React.Component {
           alt="Todos"
           eventKey="link-0"
         >
-          <Button className="btn-dark">
+          <Button className="btn-dark" onClick={this.descargarExcel}>
             <div>
               <h5>Descargar datos</h5>
             </div>
@@ -58,7 +94,7 @@ export default class Menu extends React.Component {
         </Nav.Link>
 
         <Nav.Link className=" icons-navbar mt-1" alt="Todos" eventKey="link-0">
-          <Button className="btn-info">
+          <Button className="btn-info" onClick={this.redirigirAExterna}> 
             <div>
               <h5>Más información</h5>
             </div>
