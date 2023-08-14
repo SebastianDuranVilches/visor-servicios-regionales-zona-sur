@@ -35,31 +35,31 @@ export default class InfoGraficos extends React.Component {
             <div className="m-2 filtro-servicios">
               <Form.Check // prettier-ignore
                 type={"checkbox"}
-                id={`default-checkbox`}
+                id={`cama-hospitalarias`}
                 label={`Camas hospitalarias`}
                 className="mx-2"
               />
               <Form.Check // prettier-ignore
                 type={"checkbox"}
-                id={`default-checkbox`}
+                id={`chilexpress`}
                 label={`Chilexpress`}
                 className="mx-2"
               />
               <Form.Check // prettier-ignore
                 type={"checkbox"}
-                id={`default-checkbox`}
+                id={`indap`}
                 label={`INDAP`}
                 className="mx-2"
               />
               <Form.Check // prettier-ignore
                 type={"checkbox"}
-                id={`default-checkbox`}
+                id={`sag`}
                 label={`SAG`}
                 className="mx-2"
               />
               <Form.Check // prettier-ignore
                 type={"checkbox"}
-                id={`default-checkbox`}
+                id={`capredena`}
                 label={`CAPREDENA`}
                 className="mx-2"
               />
