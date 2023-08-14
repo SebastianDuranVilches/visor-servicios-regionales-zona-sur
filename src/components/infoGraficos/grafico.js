@@ -60,7 +60,7 @@ export default class Grafico extends React.Component {
         },
         xaxis: {
           type: 'category',
-          categories: ['CAMAS HOSPITALARIAS', 'CHILEXPRESS', 'INDAP', 'SAG', 'CAPREDENA'],
+          categories: props.listaDeServiciosAMostrar,
         },
       },
       series: this.generateRandomData(props),
@@ -79,17 +79,35 @@ export default class Grafico extends React.Component {
 
     for (let i = 0; i < cities.length; i++) {
       const cityData = [];
-      cityData.push(props.servicios[i]["CAMAS HOSPITALARIAS"]);
-      cityData.push(props.servicios[i]["CHILEXPRESS"]);
-      cityData.push(this.props.servicios[i]["INDAP"]);
-      cityData.push(this.props.servicios[i]["SAG"]);
-      cityData.push(this.props.servicios[i]["CAPREDENA"]);
+      for (let j = 0; j < props.listaDeServiciosAMostrar.length; j++){
+        cityData.push(props.servicios[i][props.listaDeServiciosAMostrar[j]]);
+      };
       data.push({ name: cities[i], data: cityData });
     }
 
     console.log(data);
     return data;
   };
+
+  establecerNuevoGrafico(){
+    this.setState((prevState) => ({
+      options: {
+        ...prevState.options,
+        xaxis: {
+          ...prevState.options.xaxis,
+          categories: this.props.listaDeServiciosAMostrar,
+        },
+      },
+    }));
+    this.setState((prevState) => ({ series: this.generateRandomData(this.props) }));
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.listaDeServiciosAMostrar !== prevProps.listaDeServiciosAMostrar) {
+      this.establecerNuevoGrafico();
+    }
+  }
+
   render() {
     return (
       <div style={{ padding: "10px" }}>
