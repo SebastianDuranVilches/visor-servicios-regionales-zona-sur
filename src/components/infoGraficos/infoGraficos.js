@@ -124,7 +124,7 @@ export default class InfoGraficos extends React.Component {
                 this.seleccionarComunasRegion(e.target.value);
               }}
             >
-              <option>Región</option>
+              <option value="0">Región</option>
               <option value="1">Los Lagos</option>
               <option value="2">Los Ríos</option>
               <option value="3">Araucanía</option>
@@ -137,7 +137,7 @@ export default class InfoGraficos extends React.Component {
                 this.seleccionarDimension(e.target.value);
               }}
             >
-              <option>Todas las dimensiones</option>
+              <option value="0">Todas las dimensiones</option>
               <option value="1">Económica</option>
               <option value="2">Social</option>
               <option value="3">Infrastructura</option>
@@ -149,9 +149,10 @@ export default class InfoGraficos extends React.Component {
                   <Form.Check // prettier-ignore
                     type={"checkbox"}
                     id={servicio}
+                    key={servicio}
                     label={servicio}
                     className="mx-2"
-                    defaultChecked={true}
+                    checked={this.state.listaDeServicios.includes(servicio)}
                     onChange={(e) => {
                       // e.target.checked will return true or false if checkbox is checked
                       e.target.checked
