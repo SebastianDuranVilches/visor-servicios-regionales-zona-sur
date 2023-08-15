@@ -27,7 +27,7 @@ export default class InfoGraficos extends React.Component {
         "SAG",
         "CAPREDENA",
       ],
-      listaComunas: [],
+      listaComunas: ["CUNCO", "CARAHUE", "LOS SAUCES", "VALDIVIA", "LOS LAGOS", "LA UNION"],
     };
     this.establecerListaDeServicios =
       this.establecerListaDeServicios.bind(this);
