@@ -33,18 +33,18 @@ export default class Grafico extends React.Component {
                 {
                   from: 40,
                   to: 59,
-                  color: '#F9C8F1',
+                  color: '#FAC952',
                   name: 'Medium',
                 },
                 {
                   from: 60,
-                  to: 79,
+                  to: 90,
                   color: '#F9C851',
                   name: 'High Medium',
                 },
                 {
-                  from: 80,
-                  to: 100,
+                  from: 91,
+                  to: 10000,
                   color: '#5CB85C',
                   name: 'High',
                 },
@@ -73,19 +73,18 @@ export default class Grafico extends React.Component {
     const data = [];
     const cities = [];
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < props.ciudades.length; i++) {
       cities.push(props.ciudades[i])
     };
 
     for (let i = 0; i < cities.length; i++) {
       const cityData = [];
       for (let j = 0; j < props.listaDeServiciosAMostrar.length; j++){
-        cityData.push(props.servicios[i][props.listaDeServiciosAMostrar[j]]);
+        const ciudadEncontrada = props.servicios.find(ciudad => ciudad.CIUDAD === cities[i]);
+        cityData.push(ciudadEncontrada[props.listaDeServiciosAMostrar[j]]);
       };
       data.push({ name: cities[i], data: cityData });
     }
-
-    console.log(data);
     return data;
   };
 
@@ -102,10 +101,17 @@ export default class Grafico extends React.Component {
     this.setState((prevState) => ({ series: this.generateRandomData(this.props) }));
   };
 
+  establecerCiudades(){
+    this.setState((prevState) => ({ series: this.generateRandomData(this.props) }));
+  };
+
   componentDidUpdate(prevProps, prevState) {
     if (this.props.listaDeServiciosAMostrar !== prevProps.listaDeServiciosAMostrar) {
       this.establecerNuevoGrafico();
-    }
+    };
+    if(this.props.ciudades !== prevProps.ciudades){
+      this.establecerCiudades();
+    };
   }
 
   render() {

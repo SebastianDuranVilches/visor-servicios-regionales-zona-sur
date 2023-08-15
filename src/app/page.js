@@ -24,7 +24,9 @@ export default function Home() {
   useEffect(() => {
     for (let i = 0; i < data.length; i++) {
       setCiudades(preCiudades => [...preCiudades, data[i]["CIUDAD"]])
-      setServicios(servicios => [...servicios, {"CAMAS HOSPITALARIAS" : data[i]["CAMAS HOSPITALARIAS"],
+      setServicios(servicios => [...servicios, {
+      "CIUDAD" : data[i]["CIUDAD"],
+      "CAMAS HOSPITALARIAS" : data[i]["CAMAS HOSPITALARIAS"],
       "CHILEXPRESS": data[i]["CHILEXPRESS"],
       "INDAP": data[i]["INDAP"],
       "SAG": data[i]["SAG"],

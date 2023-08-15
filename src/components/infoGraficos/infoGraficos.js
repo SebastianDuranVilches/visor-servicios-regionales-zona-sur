@@ -13,31 +13,54 @@ export default class InfoGraficos extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      listaDeServicios: ['CAMAS HOSPITALARIAS', 'CHILEXPRESS', 'INDAP', 'SAG', 'CAPREDENA'],
+      listaDeServicios: [
+        "CAMAS HOSPITALARIAS",
+        "CHILEXPRESS",
+        "INDAP",
+        "SAG",
+        "CAPREDENA",
+      ],
+      listaComunas: [],
     };
-    this.establecerListaDeServicios = this.establecerListaDeServicios.bind(this);
-  };
+    this.establecerListaDeServicios =
+      this.establecerListaDeServicios.bind(this);
+  }
 
-  establecerListaDeServicios(servicio){
+  establecerListaDeServicios(servicio) {
     this.setState({
-      listaDeServicios: [...this.state.listaDeServicios, servicio]
+      listaDeServicios: [...this.state.listaDeServicios, servicio],
     });
-  };
+  }
 
-  agregarServiciosAlistaDeServicios(servicio){
+  agregarServiciosAlistaDeServicios(servicio) {
     this.setState({
-      listaDeServicios: [...this.state.listaDeServicios, servicio]
+      listaDeServicios: [...this.state.listaDeServicios, servicio],
     });
-  };
+  }
 
-  eliminarServiciosAlistaDeServicios(servicio){
+  eliminarServiciosAlistaDeServicios(servicio) {
     const nuevaLista = this.state.listaDeServicios.filter(
       (str) => str !== servicio
     );
     this.setState({ listaDeServicios: nuevaLista });
-    //console.log(nuevaLista);
+  }
+
+  seleccionarComunasRegion = (valor) => {
+    if (valor == "1") {
+      this.setState({
+        listaComunas: ["CUNCO", "CARAHUE", "LOS SAUCES"],
+      });
+    } else if (valor == "2") {
+      this.setState({
+        listaComunas: ["VALDIVIA", "LOS LAGOS", "LA UNION"],
+      });
+    } else {
+      this.setState({
+        listaComunas: ["VILCUN", "TOLTEN", "TEMUCO"],
+      });
+    }
   };
-  
+
   render() {
     return (
       <Container
@@ -50,11 +73,23 @@ export default class InfoGraficos extends React.Component {
         <Row className="info-container">
           <Col xl={{ span: 5, offset: 7 }} className="info">
             <h2 className="text-center">Visor de servicios</h2>
-            <Form.Select aria-label="Default select example">
+
+            <h4 className="mt-2">Cambiar región</h4>
+            <Form.Select aria-label="Default select Región" 
+            onChange={(e) => {this.seleccionarComunasRegion(e.target.value)}}
+            >
               <option>Región</option>
               <option value="1">Los Lagos</option>
               <option value="2">Los Ríos</option>
               <option value="3">Araucanía</option>
+            </Form.Select>
+
+            <h4 className="mt-2">Cambiar dimensión</h4>
+            <Form.Select aria-label="Default select dimensión">
+              <option>Todas las dimensiones</option>
+              <option value="1">Económica</option>
+              <option value="2">Social</option>
+              <option value="3">Infrastructura</option>
             </Form.Select>
 
             <div className="m-2 filtro-servicios">
@@ -66,7 +101,13 @@ export default class InfoGraficos extends React.Component {
                 defaultChecked={true}
                 onChange={(e) => {
                   // e.target.checked will return true or false if checkbox is checked
-                  e.target.checked ? this.agregarServiciosAlistaDeServicios("CAMAS HOSPITALARIAS") : this.eliminarServiciosAlistaDeServicios("CAMAS HOSPITALARIAS");
+                  e.target.checked
+                    ? this.agregarServiciosAlistaDeServicios(
+                        "CAMAS HOSPITALARIAS"
+                      )
+                    : this.eliminarServiciosAlistaDeServicios(
+                        "CAMAS HOSPITALARIAS"
+                      );
                 }}
               />
               <Form.Check // prettier-ignore
@@ -77,7 +118,9 @@ export default class InfoGraficos extends React.Component {
                 defaultChecked={true}
                 onChange={(e) => {
                   // e.target.checked will return true or false if checkbox is checked
-                  e.target.checked ? this.agregarServiciosAlistaDeServicios("CHILEXPRESS") : this.eliminarServiciosAlistaDeServicios("CHILEXPRESS");
+                  e.target.checked
+                    ? this.agregarServiciosAlistaDeServicios("CHILEXPRESS")
+                    : this.eliminarServiciosAlistaDeServicios("CHILEXPRESS");
                 }}
               />
               <Form.Check // prettier-ignore
@@ -88,7 +131,9 @@ export default class InfoGraficos extends React.Component {
                 defaultChecked={true}
                 onChange={(e) => {
                   // e.target.checked will return true or false if checkbox is checked
-                  e.target.checked ? this.agregarServiciosAlistaDeServicios("INDAP") : this.eliminarServiciosAlistaDeServicios("INDAP");
+                  e.target.checked
+                    ? this.agregarServiciosAlistaDeServicios("INDAP")
+                    : this.eliminarServiciosAlistaDeServicios("INDAP");
                 }}
               />
               <Form.Check // prettier-ignore
@@ -99,7 +144,9 @@ export default class InfoGraficos extends React.Component {
                 defaultChecked={true}
                 onChange={(e) => {
                   // e.target.checked will return true or false if checkbox is checked
-                  e.target.checked ? this.agregarServiciosAlistaDeServicios("SAG") : this.eliminarServiciosAlistaDeServicios("SAG");
+                  e.target.checked
+                    ? this.agregarServiciosAlistaDeServicios("SAG")
+                    : this.eliminarServiciosAlistaDeServicios("SAG");
                 }}
               />
               <Form.Check // prettier-ignore
@@ -110,14 +157,16 @@ export default class InfoGraficos extends React.Component {
                 defaultChecked={true}
                 onChange={(e) => {
                   // e.target.checked will return true or false if checkbox is checked
-                  e.target.checked ? this.agregarServiciosAlistaDeServicios("CAPREDENA") : this.eliminarServiciosAlistaDeServicios("CAPREDENA");
+                  e.target.checked
+                    ? this.agregarServiciosAlistaDeServicios("CAPREDENA")
+                    : this.eliminarServiciosAlistaDeServicios("CAPREDENA");
                 }}
               />
             </div>
             <Grafico
-              ciudades={this.props.ciudades}
+              ciudades={this.state.listaComunas}
               servicios={this.props.servicios}
-              listaDeServiciosAMostrar = {this.state.listaDeServicios}
+              listaDeServiciosAMostrar={this.state.listaDeServicios}
             />
           </Col>
         </Row>
