@@ -20,6 +20,13 @@ export default class InfoGraficos extends React.Component {
         "SAG",
         "CAPREDENA",
       ],
+      listaDeServiciosAMostrar : [
+        "CAMAS HOSPITALARIAS",
+        "CHILEXPRESS",
+        "INDAP",
+        "SAG",
+        "CAPREDENA",
+      ],
       listaComunas: [],
     };
     this.establecerListaDeServicios =
@@ -61,6 +68,42 @@ export default class InfoGraficos extends React.Component {
     }
   };
 
+  seleccionarDimension = (valor) => {
+    if (valor == "1") {
+      this.setState({
+        listaDeServicios: ["CHILEXPRESS"],
+        listaDeServiciosAMostrar: ["CHILEXPRESS"],
+      });
+    } else if (valor == "2") {
+      this.setState({
+        listaDeServicios: ["INDAP", "SAG"],
+        listaDeServiciosAMostrar: ["INDAP", "SAG"],
+      });
+    } else if (valor == "3") {
+      this.setState({
+        listaDeServicios: ["CAMAS HOSPITALARIAS"],
+        listaDeServiciosAMostrar: ["CAMAS HOSPITALARIAS"],
+      });
+    } else {
+      this.setState({
+        listaDeServicios: [
+          "CAMAS HOSPITALARIAS",
+          "CHILEXPRESS",
+          "INDAP",
+          "SAG",
+          "CAPREDENA",
+        ],
+        listaDeServiciosAMostrar: [
+          "CAMAS HOSPITALARIAS",
+          "CHILEXPRESS",
+          "INDAP",
+          "SAG",
+          "CAPREDENA",
+        ],
+      });
+    }
+  };
+
   render() {
     return (
       <Container
@@ -75,8 +118,11 @@ export default class InfoGraficos extends React.Component {
             <h2 className="text-center">Visor de servicios</h2>
 
             <h4 className="mt-2">Cambiar región</h4>
-            <Form.Select aria-label="Default select Región" 
-            onChange={(e) => {this.seleccionarComunasRegion(e.target.value)}}
+            <Form.Select
+              aria-label="Default select Región"
+              onChange={(e) => {
+                this.seleccionarComunasRegion(e.target.value);
+              }}
             >
               <option>Región</option>
               <option value="1">Los Lagos</option>
@@ -85,7 +131,12 @@ export default class InfoGraficos extends React.Component {
             </Form.Select>
 
             <h4 className="mt-2">Cambiar dimensión</h4>
-            <Form.Select aria-label="Default select dimensión">
+            <Form.Select
+              aria-label="Default select dimensión"
+              onChange={(e) => {
+                this.seleccionarDimension(e.target.value);
+              }}
+            >
               <option>Todas las dimensiones</option>
               <option value="1">Económica</option>
               <option value="2">Social</option>
@@ -93,75 +144,23 @@ export default class InfoGraficos extends React.Component {
             </Form.Select>
 
             <div className="m-2 filtro-servicios">
-              <Form.Check // prettier-ignore
-                type={"checkbox"}
-                id={`cama-hospitalarias`}
-                label={`Camas hospitalarias`}
-                className="mx-2"
-                defaultChecked={true}
-                onChange={(e) => {
-                  // e.target.checked will return true or false if checkbox is checked
-                  e.target.checked
-                    ? this.agregarServiciosAlistaDeServicios(
-                        "CAMAS HOSPITALARIAS"
-                      )
-                    : this.eliminarServiciosAlistaDeServicios(
-                        "CAMAS HOSPITALARIAS"
-                      );
-                }}
-              />
-              <Form.Check // prettier-ignore
-                type={"checkbox"}
-                id={`chilexpress`}
-                label={`Chilexpress`}
-                className="mx-2"
-                defaultChecked={true}
-                onChange={(e) => {
-                  // e.target.checked will return true or false if checkbox is checked
-                  e.target.checked
-                    ? this.agregarServiciosAlistaDeServicios("CHILEXPRESS")
-                    : this.eliminarServiciosAlistaDeServicios("CHILEXPRESS");
-                }}
-              />
-              <Form.Check // prettier-ignore
-                type={"checkbox"}
-                id={`indap`}
-                label={`INDAP`}
-                className="mx-2"
-                defaultChecked={true}
-                onChange={(e) => {
-                  // e.target.checked will return true or false if checkbox is checked
-                  e.target.checked
-                    ? this.agregarServiciosAlistaDeServicios("INDAP")
-                    : this.eliminarServiciosAlistaDeServicios("INDAP");
-                }}
-              />
-              <Form.Check // prettier-ignore
-                type={"checkbox"}
-                id={`sag`}
-                label={`SAG`}
-                className="mx-2"
-                defaultChecked={true}
-                onChange={(e) => {
-                  // e.target.checked will return true or false if checkbox is checked
-                  e.target.checked
-                    ? this.agregarServiciosAlistaDeServicios("SAG")
-                    : this.eliminarServiciosAlistaDeServicios("SAG");
-                }}
-              />
-              <Form.Check // prettier-ignore
-                type={"checkbox"}
-                id={`capredena`}
-                label={`CAPREDENA`}
-                className="mx-2"
-                defaultChecked={true}
-                onChange={(e) => {
-                  // e.target.checked will return true or false if checkbox is checked
-                  e.target.checked
-                    ? this.agregarServiciosAlistaDeServicios("CAPREDENA")
-                    : this.eliminarServiciosAlistaDeServicios("CAPREDENA");
-                }}
-              />
+              {this.state.listaDeServiciosAMostrar.map((servicio) => {
+                return (
+                  <Form.Check // prettier-ignore
+                    type={"checkbox"}
+                    id={servicio}
+                    label={servicio}
+                    className="mx-2"
+                    defaultChecked={true}
+                    onChange={(e) => {
+                      // e.target.checked will return true or false if checkbox is checked
+                      e.target.checked
+                        ? this.agregarServiciosAlistaDeServicios(servicio)
+                        : this.eliminarServiciosAlistaDeServicios(servicio);
+                    }}
+                  />
+                );
+              })}
             </div>
             <Grafico
               ciudades={this.state.listaComunas}
