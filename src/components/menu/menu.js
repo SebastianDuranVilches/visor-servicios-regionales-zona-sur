@@ -9,7 +9,7 @@ export default class Menu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      menuDetails: false,
+      menuDetails: true,
     };
     this.descargarExcel = this.descargarExcel.bind(this);
   }

@@ -8,11 +8,16 @@ import {
   MapControl,
   Marker,
   Popup,
+  GeoJSON,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./mapaDeServicios.css";
+import geoJsonData from "../../datosDePrueba/Mancha_Urbana_2017.json"
 
-const position = [-40.153912, -72.936010];
+
+//-39.118638, -71.777971
+// -40.153912, -72.936010
+const position = [-39.118638, -71.777971];
 
 const WindroseControl = () => {
   return (
@@ -25,6 +30,8 @@ const WindroseControl = () => {
 
 export default class MapaDeServicios extends React.Component {
   render() {
+    //const geoJsonData = {}; // Coloca aquí el contenido de tu archivo GeoJSON
+
     return (
       <MapContainer
         center={position}
@@ -36,6 +43,7 @@ export default class MapaDeServicios extends React.Component {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <GeoJSON data={geoJsonData} />
         <div className="windrose-container">
           <WindroseControl /> {/* Agrega el componente del rosa de los vientos */}
         </div>

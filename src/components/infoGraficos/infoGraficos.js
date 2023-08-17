@@ -114,10 +114,10 @@ export default class InfoGraficos extends React.Component {
         }}
       >
         <Row className="info-container">
-          <Col xl={{ span: 5, offset: 7 }} className="info">
+          <Col xl={{ span: 4, offset: 8 }} className="info">
             <h2 className="text-center">Visor de servicios</h2>
 
-            <h4 className="mt-2">Cambiar región</h4>
+            <h4 className="mt-2">Región</h4>
             <Form.Select
               aria-label="Default select Región"
               onChange={(e) => {
@@ -125,12 +125,11 @@ export default class InfoGraficos extends React.Component {
               }}
             >
               <option value="0">Región</option>
-              <option value="1">Los Lagos</option>
               <option value="2">Los Ríos</option>
               <option value="3">Araucanía</option>
             </Form.Select>
 
-            <h4 className="mt-2">Cambiar dimensión</h4>
+            <h4 className="mt-2">Dimensión</h4>
             <Form.Select
               aria-label="Default select dimensión"
               onChange={(e) => {
