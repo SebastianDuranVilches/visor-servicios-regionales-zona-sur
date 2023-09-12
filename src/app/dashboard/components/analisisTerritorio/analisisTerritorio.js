@@ -2,6 +2,12 @@ import React from "react";
 import "./analisisTerritorio.css";
 import { Row, Col, Container, Form } from "react-bootstrap";
 import RadarChartAnalisis from "./radarChart";
+import dynamic from "next/dynamic";
+
+const MapaAnalisis = dynamic(
+    () => import("./mapaAnalisis"),
+    { ssr: false }
+  );
 
 export default class AnalisisTerritorio extends React.Component {
   render() {
@@ -52,8 +58,8 @@ export default class AnalisisTerritorio extends React.Component {
                 <RadarChartAnalisis></RadarChartAnalisis>
               </div>
             </Col>
-            <Col className="analisis-boxs m-3">
-              <div>Mapa</div>
+            <Col className="analisis-boxs m-3" style={{padding : "0px"}}>
+            <MapaAnalisis/>
             </Col>
           </Row>
         </Container>
