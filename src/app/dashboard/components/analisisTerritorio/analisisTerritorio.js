@@ -1,13 +1,18 @@
 import React from "react";
 import "./analisisTerritorio.css";
 import { Row, Col, Container, Form } from "react-bootstrap";
-import RadarChartAnalisis from "./radarChart";
+//import RadarChartAnalisis from "./radarChart";
 import dynamic from "next/dynamic";
 
 const MapaAnalisis = dynamic(
     () => import("./mapaAnalisis"),
     { ssr: false }
   );
+
+const RadarChartAnalisis = dynamic(
+  () => import("./radarChart"),
+  { ssr: false }
+);
 
 export default class AnalisisTerritorio extends React.Component {
   render() {
