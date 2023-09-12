@@ -18,7 +18,7 @@ export default class AnalisisTerritorio extends React.Component {
   render() {
     return (
       <div className="analisisTerritorio p-1">
-        <Row className="text-center">
+        <Row className="text-center pt-4">
           <h3 className="titulos-dashboard">ANÁLISIS POR TERRITORIO</h3>
           <h3 className="titulos-dashboard">TERRITORIO: REGIÓN/CIUDAD</h3>
         </Row>

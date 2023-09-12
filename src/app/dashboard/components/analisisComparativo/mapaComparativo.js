@@ -26,7 +26,7 @@ const WindroseControl = () => {
   );
 };
 
-export default class MapaAnalisis extends React.Component {
+export default class MapaComparativo extends React.Component {
   render() {
     return (
       <MapContainer
