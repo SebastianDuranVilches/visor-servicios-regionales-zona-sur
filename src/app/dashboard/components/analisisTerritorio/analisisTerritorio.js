@@ -23,8 +23,8 @@ export default class AnalisisTerritorio extends React.Component {
           <h3 className="titulos-dashboard">TERRITORIO: REGIÓN/CIUDAD</h3>
         </Row>
         <Container>
-          <Row className="p-1">
-            <Col className="analisis-boxs m-3 py-3">
+          <Row className="p-1 analisis-big-box">
+            <Col lg className="analisis-boxs m-3 py-3">
               <div
                 className="d-flex flex-column justify-content-between"
                 style={{ height: "100%" }}
@@ -58,12 +58,12 @@ export default class AnalisisTerritorio extends React.Component {
                 </div>
               </div>
             </Col>
-            <Col className="analisis-boxs m-3">
+            <Col lg className="analisis-boxs m-3">
               <div>
                 <RadarChartAnalisis></RadarChartAnalisis>
               </div>
             </Col>
-            <Col className="analisis-boxs m-3" style={{padding : "0px"}}>
+            <Col lg className="analisis-boxs m-3" style={{padding : "0px", minHeight: "358.294px"}}>
             <MapaAnalisis/>
             </Col>
           </Row>
