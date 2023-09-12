@@ -8,7 +8,14 @@ const MapaComparativo = dynamic(() => import("./mapaComparativo"), {
 });
 
 const GradicoComparativoCiudadesDimensiones = dynamic(
-  () => import("./gradicoComparativoCiudadesDimensiones"),
+  () => import("./graficoComparativoCiudadesDimensiones"),
+  {
+    ssr: false,
+  }
+);
+
+const GraficoComparativoUnServicio = dynamic(
+  () => import("./graficoComparativoUnServicio"),
   {
     ssr: false,
   }
@@ -145,7 +152,7 @@ export default class AnalisisComparativo extends React.Component {
                 <div className="p-2">
                   CIUDADES
                   <Form.Select aria-label="Default select">
-                    <option>Región</option>
+                    <option>Ciudades</option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
                     <option value="3">Three</option>
@@ -173,7 +180,9 @@ export default class AnalisisComparativo extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col className="analisis-boxs m-3 py-3">Otro grafico</Col>
+          <Col className="analisis-boxs m-3 py-3" style={{paddingLeft : "30px"}}>
+              <GraficoComparativoUnServicio />
+            </Col>
             <Col className="analisis-boxs m-3 py-3">
               {" "}
               {/* Quizas quitarlo despues */}

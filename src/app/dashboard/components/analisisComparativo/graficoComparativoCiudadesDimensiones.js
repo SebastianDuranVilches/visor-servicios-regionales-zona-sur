@@ -20,31 +20,31 @@ export default class GradicoComparativoCiudadesDimensiones extends React.Compone
                 {
                   from: 0,
                   to: 19,
-                  color: '#D953FF',
+                  color: '#5A1A16',
                   name: 'Low',
                 },
                 {
                   from: 20,
                   to: 39,
-                  color: '#D9534F',
+                  color: '#4B3134',
                   name: 'Low Medium',
                 },
                 {
                   from: 40,
                   to: 59,
-                  color: '#FAC952',
+                  color: '#2E3135',
                   name: 'Medium',
                 },
                 {
                   from: 60,
                   to: 90,
-                  color: '#F9C851',
+                  color: '#64464A',
                   name: 'High Medium',
                 },
                 {
                   from: 91,
                   to: 10000,
-                  color: '#5CB85C',
+                  color: '#66AEAE',
                   name: 'High',
                 },
               ],
@@ -54,9 +54,10 @@ export default class GradicoComparativoCiudadesDimensiones extends React.Compone
         dataLabels: {
           enabled: false,
         },
-        title: {
-          text: 'Heatmap Data for Chilean Cities',
-        },
+        /*title: {
+          text: 'Ciudades,
+          show: false
+        },*/
         xaxis: {
           type: 'category',
           categories: props.listaDeServiciosAMostrar,
