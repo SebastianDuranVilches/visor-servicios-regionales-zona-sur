@@ -1,6 +1,6 @@
 import React from "react";
 import "./analisisComparativo.css";
-import { Container, Row, Col, Form } from "react-bootstrap";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import dynamic from "next/dynamic";
 
 const MapaComparativo = dynamic(() => import("./mapaComparativo"), {
@@ -130,21 +130,21 @@ export default class AnalisisComparativo extends React.Component {
         <Container>
           <Row>
             <Col
-              className="analisis-boxs m-3 "
+              className="analisis-boxs m-3"
               style={{ padding: "0px", minHeight: "358.294px" }}
             >
               <MapaComparativo />
             </Col>
           </Row>
-          <Row>
-            <Col className="analisis-boxs m-3 py-3">
+          <Row className="fila-comparativo">
+            <Col lg className="analisis-boxs m-3 py-3 columna-comparativo">
               <GradicoComparativoCiudadesDimensiones
                 ciudades={this.state.listaComunas}
                 servicios={this.props.servicios}
                 listaDeServiciosAMostrar={this.state.listaDeServicios}
               />
             </Col>
-            <Col className="analisis-boxs m-3 py-3">
+            <Col lg className="analisis-boxs m-3 py-3 panel-comparativo panle-comparativo-ancho-responsivo" style={{ maxWidth: "358.294px" }} >
               <div
                 className="d-flex flex-column justify-content-between"
                 style={{ height: "100%" }}
@@ -179,14 +179,28 @@ export default class AnalisisComparativo extends React.Component {
               </div>
             </Col>
           </Row>
-          <Row>
-          <Col className="analisis-boxs m-3 py-3" style={{paddingLeft : "30px"}}>
+          <Row className="fila-comparativo" >
+            <Col
+              lg
+              className="analisis-boxs m-3 py-3 columna-comparativo"
+              style={{ paddingLeft: "30px" }}
+            >
               <GraficoComparativoUnServicio />
             </Col>
-            <Col className="analisis-boxs m-3 py-3">
-              {" "}
-              {/* Quizas quitarlo despues */}
-              otro panel o botones
+            <Col lg className="panle-comparativo-ancho-responsivo" style={{ maxWidth: "388.294px" }} >
+              <Row>
+                <Col className="analisis-boxs panel-comparativo m-3 py-3">Otros parámetros??</Col>
+              </Row>
+              <Row className="flex-column align-items-center">
+                <Col className="p-3 botones-panel">
+                  <Button className="color-primario w-100 mb-3">
+                    <img src="./plusIcon.svg" alt="Plus Icon" /> Más información
+                  </Button>
+                  <Button className="color-secundario w-100">
+                    <img src="./plusIcon.svg" alt="Plus Icon" /> Obtener datos
+                  </Button>
+                </Col>
+              </Row>
             </Col>
           </Row>
         </Container>

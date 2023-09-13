@@ -1,50 +1,128 @@
 .analisisComparativo {
-    background: #fff;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  }
+  background: #fff;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
 
-.analisis-boxs{
-    border-radius: 2px;
-    border: 2px solid #566464;
-  }
+.analisis-boxs {
+  border-radius: 2px;
+  border: 2px solid #566464;
+}
 
-  .mapaDeServicios {
-    height: 100%;
-    width: 100%;
+.mapaDeServicios {
+  height: 100%;
+  width: 100%;
 }
 
 /* Zoom Control */
 .leaflet-bottom.leaflet-right .leaflet-control-zoom {
-    background-color: #ffff; /* Cambiar el fondo del ZoomControl */
-    color: #000; /* Cambiar el color del texto del ZoomControl */
-    box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.37);/*border: 2px solid #000;  Cambiar el borde del ZoomControl */
-    border: 2px solid #FFF;
-    border-radius: 5px; /* Añadir bordes redondeados */
-    padding: 5px 10px; /* Ajustar el espacio interno */
-  }
+  background-color: #ffff; /* Cambiar el fondo del ZoomControl */
+  color: #000; /* Cambiar el color del texto del ZoomControl */
+  box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.37); /*border: 2px solid #000;  Cambiar el borde del ZoomControl */
+  border: 2px solid #fff;
+  border-radius: 5px; /* Añadir bordes redondeados */
+  padding: 5px 10px; /* Ajustar el espacio interno */
+}
 
 /* Zoom Control */
 .leaflet-top.leaflet-right .leaflet-control-zoom {
   background-color: #ffff; /* Cambiar el fondo del ZoomControl */
   color: #000; /* Cambiar el color del texto del ZoomControl */
-  box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.37);/*border: 2px solid #000;  Cambiar el borde del ZoomControl */
-  border: 2px solid #FFF;
+  box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.37); /*border: 2px solid #000;  Cambiar el borde del ZoomControl */
+  border: 2px solid #fff;
   border-radius: 5px; /* Añadir bordes redondeados */
   padding: 4px 4px; /* Ajustar el espacio interno */
 }
-   
-  .mapaDeServicios {
-    width: 100%;
-    position: relative; /* Agrega esta línea para permitir el posicionamiento absoluto */
+
+.mapaDeServicios {
+  width: 100%;
+  position: relative; /* Agrega esta línea para permitir el posicionamiento absoluto */
+}
+
+.windrose-container {
+  position: absolute;
+  bottom: 50px;
+  right: 15px;
+  z-index: 1000; /* Asegura que el rosa de los vientos esté en capa superior */
+}
+
+.windrose-control img {
+  max-width: 50px; /* Ajusta el tamaño de la imagen según tus necesidades */
+}
+
+.color-primario {
+  padding: 12px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  background: #81acaa;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  color: var(--White, #fff);
+  --bs-btn-border-radius: 0;
+  --bs-btn-active-bg: rgb(80, 104, 103);
+  border-style: none;
+  /* Body • Heavy */
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 22px; /* 137.5% */
+  letter-spacing: -0.32px;
+
+}
+
+.color-primario:hover{
+  background: #87c4c1;
+}
+
+.color-secundario {
+  padding: 12px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  background: #634F4E;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-style: none;
+  --bs-btn-border-radius: 0;
+  --bs-btn-active-bg: #473a3a;
+  /* Body • Heavy */
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 22px; /* 137.5% */
+  letter-spacing: -0.32px;
+}
+
+.color-secundario:hover{
+  background: #8d6866;
+}
+
+@media (max-width: 992px) {
+  .fila-comparativo{
+    padding: 1rem !important;
   }
-  
-  .windrose-container {
-    position: absolute;
-    bottom: 50px;
-    right: 15px;
-    z-index: 1000; /* Asegura que el rosa de los vientos esté en capa superior */
+
+  .columna-comparativo{
+    margin: 0 !important;
   }
-  
-  .windrose-control img {
-    max-width: 50px; /* Ajusta el tamaño de la imagen según tus necesidades */
+
+  .panle-comparativo-ancho-responsivo{
+    max-width: 100% !important;
   }
+
+  .panel-comparativo{
+    margin-bottom: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 2rem !important;
+  }
+
+  .botones-panel{
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 1rem !important;
+  }
+}
