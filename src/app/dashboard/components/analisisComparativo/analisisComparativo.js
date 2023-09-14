@@ -144,7 +144,11 @@ export default class AnalisisComparativo extends React.Component {
                 listaDeServiciosAMostrar={this.state.listaDeServicios}
               />
             </Col>
-            <Col lg className="analisis-boxs m-3 py-3 panel-comparativo panle-comparativo-ancho-responsivo" style={{ maxWidth: "358.294px" }} >
+            <Col
+              lg
+              className="analisis-boxs m-3 py-3 panel-comparativo panle-comparativo-ancho-responsivo"
+              style={{ maxWidth: "358.294px" }}
+            >
               <div
                 className="d-flex flex-column justify-content-between"
                 style={{ height: "100%" }}
@@ -179,7 +183,7 @@ export default class AnalisisComparativo extends React.Component {
               </div>
             </Col>
           </Row>
-          <Row className="fila-comparativo" >
+          <Row className="fila-comparativo">
             <Col
               lg
               className="analisis-boxs m-3 py-3 columna-comparativo"
@@ -187,18 +191,29 @@ export default class AnalisisComparativo extends React.Component {
             >
               <GraficoComparativoUnServicio />
             </Col>
-            <Col lg className="panle-comparativo-ancho-responsivo" style={{ maxWidth: "388.294px" }} >
+            <Col
+              lg
+              className="panle-comparativo-ancho-responsivo"
+              style={{ maxWidth: "388.294px" }}
+            >
               <Row>
-                <Col className="analisis-boxs panel-comparativo m-3 py-3">Otros parámetros??</Col>
+                <Col className="analisis-boxs panel-comparativo m-3 py-3">
+                  Otros parámetros??
+                </Col>
               </Row>
               <Row className="flex-column align-items-center">
                 <Col className="p-3 botones-panel">
-                  <Button className="color-primario w-100 mb-3">
-                    <img src="./plusIcon.svg" alt="Plus Icon" /> Más información
-                  </Button>
+                  <a href="http://fmaturana.cl/Fondecyt_1230159">
+                    <Button className="color-primario w-100 mb-3">
+                      <img src="./plusIcon.svg" alt="Plus Icon" /> Más
+                      información
+                    </Button>
+                  </a>
+                  <a href="datosTest.json" download="datosTest.json">
                   <Button className="color-secundario w-100">
                     <img src="./plusIcon.svg" alt="Plus Icon" /> Obtener datos
                   </Button>
+                  </a>
                 </Col>
               </Row>
             </Col>
