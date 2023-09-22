@@ -2,6 +2,7 @@ import React from "react";
 import "./analisisComparativo.css";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import dynamic from "next/dynamic";
+import Multiselect from "multiselect-react-dropdown";
 
 const MapaComparativo = dynamic(() => import("./mapaComparativo"), {
   ssr: false,
@@ -21,109 +22,296 @@ const GraficoComparativoUnServicio = dynamic(
   }
 );
 
+import manchasUrbanas from "../../../../../public/data/Mancha_Urbana_2017.json";
+
+function sonListasIguales(lista1, lista2) {
+  return JSON.stringify(lista1) === JSON.stringify(lista2);
+}
+
 export default class AnalisisComparativo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      listaDeServicios: [
-        "CAMAS HOSPITALARIAS",
-        "CHILEXPRESS",
-        "INDAP",
-        "SAG",
-        "CAPREDENA",
-      ],
-      listaDeServiciosAMostrar: [
-        "CAMAS HOSPITALARIAS",
-        "CHILEXPRESS",
-        "INDAP",
-        "SAG",
-        "CAPREDENA",
-      ],
-      listaComunas: [
-        "CUNCO",
-        "CARAHUE",
-        "LOS SAUCES",
-        "VALDIVIA",
-        "LOS LAGOS",
-        "LA UNION",
-      ],
+      indiceDimension: props.indiceDimension,
+      indiceProvisionCiudad: props.indiceProvisionCiudad,
+      rangosIndicadores: props.rangosIndicadores,
+      rangosDimensiones: props.rangosDimensiones,
+      rangosIndiceProvision: props.rangosIndiceProvision,
+      valorPorCiudadIndicador: props.valorPorCiudadIndicador,
+      mostrarIndiceDimension: props.indiceDimension,
+      mostrarIndiceProvisionCiudad: props.indiceProvisionCiudad,
+      mostrarRangosIndicadores: props.rangosIndicadores,
+      mostrarRangosDimensiones: props.rangosDimensiones,
+      mostrarRangosIndiceProvision: props.rangosIndiceProvision,
+      mostrarValorPorCiudadIndicador: props.valorPorCiudadIndicador,
+      nombreIndicadores: props.nombreIndicadores,
+      zonasUrbanas: [],
+      ciudades: [],
+      listaIndicadores: [],
+      selectedUrbanosDimensiones: [],
+      selectedUrbanosServicios: [],
     };
-    this.establecerListaDeServicios =
-      this.establecerListaDeServicios.bind(this);
   }
 
-  establecerListaDeServicios(servicio) {
+  componentDidMount() {
+    const zonasUrbanas = this.obtenerZonasUrbanas();
+    const ciudadesRios = zonasUrbanas
+      .map((objeto) => {
+        if (objeto.region === "14") {
+          return { nombre: objeto.urbano, region: objeto.region };
+        }
+        return null;
+      })
+      .filter((ciudad) => ciudad !== null);
+
+    const ciudadesAraucania = zonasUrbanas
+      .map((objeto) => {
+        if (objeto.region === "9") {
+          return { nombre: objeto.urbano, region: objeto.region };
+        }
+        return null;
+      })
+      .filter((ciudad) => ciudad !== null);
+
     this.setState({
-      listaDeServicios: [...this.state.listaDeServicios, servicio],
+      zonasUrbanas: zonasUrbanas,
+      ciudades: [
+        { nombre: "REGIÓN DE LA ARAUCANÍA", region: "9" },
+        ...ciudadesAraucania,
+        { nombre: "REGÍON DE LOS RÍOS", region: "14" },
+        ...ciudadesRios,
+      ],
     });
   }
 
-  agregarServiciosAlistaDeServicios(servicio) {
+  actualizarListaDimensionesIndicadores = () => {
+    //Dimensiones y servicios
+    const Dimensiones = this.state.nombreIndicadores
+      .reduce((resultado, objeto) => {
+        const nombreDimension = objeto["Dimensión"];
+        if (!resultado.includes(nombreDimension)) {
+          resultado.push(nombreDimension);
+        }
+        return resultado;
+      }, [])
+      .map((nombreDimension) => nombreDimension);
+
+    const listaIndicadores = [];
+
+    for (var i = 0; i < Dimensiones.length; i++) {
+      var indicadores = this.state.nombreIndicadores
+        .map((indicador) => {
+          if (indicador["Dimensión"] === Dimensiones[i]) {
+            return indicador["Indicador o variable"];
+          }
+          return null;
+        })
+        .filter((indicador) => indicador !== null);
+      listaIndicadores.push(Dimensiones[i]);
+      listaIndicadores.push(...indicadores);
+    }
+    return listaIndicadores;
+  };
+
+  obtenerZonasUrbanas = () => {
+    const zonasUrbanas = [];
+    for (let i = 0; i < manchasUrbanas.features.length; i++) {
+      const poligono = manchasUrbanas.features[i];
+      if (poligono.properties.URBANO) {
+        zonasUrbanas.push({
+          comuna: poligono.properties.COMUNA,
+          nombreComuna: poligono.properties.NOM_COMUNA,
+          urbano: poligono.properties.URBANO,
+          region: poligono.properties.REGION,
+          nombreRegion: poligono.properties.NOM_REGION,
+        });
+      }
+    }
+    return zonasUrbanas;
+  };
+
+  componentDidUpdate(prevProps) {
+    // Verifica si los props han cambiado y actualiza el estado local
+    if (
+      prevProps.indiceDimension !== this.props.indiceDimension ||
+      prevProps.indiceProvisionCiudad !== this.props.indiceProvisionCiudad ||
+      prevProps.rangosIndicadores !== this.props.rangosIndicadores ||
+      prevProps.rangosDimensiones !== this.props.rangosDimensiones ||
+      prevProps.rangosIndiceProvision !== this.props.rangosIndiceProvision ||
+      prevProps.valorPorCiudadIndicador !==
+        this.props.valorPorCiudadIndicador ||
+      prevProps.nombreIndicadores !== this.props.nombreIndicadores
+    ) {
+      this.actualizarEstadoLocal();
+    }
+  }
+
+  actualizarEstadoLocal() {
+    // Actualiza el estado local con los nuevos props
     this.setState({
-      listaDeServicios: [...this.state.listaDeServicios, servicio],
+      indiceDimension: this.props.indiceDimension,
+      indiceProvisionCiudad: this.props.indiceProvisionCiudad,
+      rangosIndicadores: this.props.rangosIndicadores,
+      rangosDimensiones: this.props.rangosDimensiones,
+      rangosIndiceProvision: this.props.rangosIndiceProvision,
+      valorPorCiudadIndicador: this.props.valorPorCiudadIndicador,
+      nombreIndicadores: this.props.nombreIndicadores,
     });
   }
 
-  eliminarServiciosAlistaDeServicios(servicio) {
-    const nuevaLista = this.state.listaDeServicios.filter(
-      (str) => str !== servicio
+  handleSelectUrbanosDimensiones = (selectedList) => {
+    // Filtra los elementos con urbano igual a "TODOS"
+    const elementosConTodos = selectedList.filter(
+      (elemento) =>
+        elemento.urbano === "TODA LA REGIÓN DE LOS RÍOS" ||
+        elemento.urbano === "TODA LA REGIÓN DE LA ARAUCANÍA"
     );
-    this.setState({ listaDeServicios: nuevaLista });
-  }
+    const elementosConTodosAnterior =
+      this.state.selectedUrbanosDimensiones.filter(
+        (elemento) =>
+          elemento.urbano === "TODA LA REGIÓN DE LOS RÍOS" ||
+          elemento.urbano === "TODA LA REGIÓN DE LA ARAUCANÍA"
+      );
 
-  seleccionarComunasRegion = (valor) => {
-    if (valor == "1") {
-      this.setState({
-        listaComunas: ["CUNCO", "CARAHUE", "LOS SAUCES"],
-      });
-    } else if (valor == "2") {
-      this.setState({
-        listaComunas: ["VALDIVIA", "LOS LAGOS", "LA UNION"],
-      });
+    if (!sonListasIguales(elementosConTodosAnterior, elementosConTodos)) {
+      if (elementosConTodosAnterior.length < elementosConTodos.length) {
+        // Cuando hay un nuevo "todos"
+        const regionObjtivo = elementosConTodos.filter(
+          (elemento) => !elementosConTodosAnterior.includes(elemento)
+        );
+        const urbanoDeRegion = this.obtenerZonasUrbanas().filter(
+          (item) => item.nombreRegion === regionObjtivo[0].nombreRegion
+        );
+        const lista = [...new Set([...selectedList, ...urbanoDeRegion])];
+        const listaSinRepetidos = [];
+        const comprobarDuplicados = {};
+
+        for (const elemento of lista) {
+          const claveUnica = elemento.nombreComuna; // O usa otra clave única según tus necesidades
+
+          if (!comprobarDuplicados[claveUnica]) {
+            listaSinRepetidos.push(elemento);
+            comprobarDuplicados[claveUnica] = true;
+          }
+        }
+        console.log(listaSinRepetidos);
+        this.setState({ selectedUrbanosDimensiones: listaSinRepetidos });
+      } else {
+        // Cuando se desmarca uno "todos"
+        const regionObjtivo = elementosConTodosAnterior.filter(
+          (elemento) => !elementosConTodos.includes(elemento)
+        );
+        const urbanoDeRegion = this.obtenerZonasUrbanas().filter(
+          (item) => item.nombreRegion === regionObjtivo[0].nombreRegion
+        );
+        const lista = urbanoDeRegion.filter((elemento) =>
+          selectedList.includes(elemento)
+        );
+        this.setState({ selectedUrbanosDimensiones: lista });
+      }
     } else {
-      this.setState({
-        listaComunas: ["VILCUN", "TOLTEN", "TEMUCO"],
-      });
+      if (this.state.selectedUrbanosDimensiones.length > selectedList.length) {
+        const elementoQuitado = this.state.selectedUrbanosDimensiones.filter(
+          (elemento) => !selectedList.includes(elemento)
+        );
+        selectedList = selectedList.filter((elemento) => {
+          // Compara cada elemento con el objeto que deseas eliminar
+          return elemento.urbano !== "TODA LA " + elementoQuitado[0].nombreRegion;
+        });
+        console.log("elemento quitado");
+      } else {
+        console.log("elemento agregado");
+      }
+
+      this.setState({ selectedUrbanosDimensiones: selectedList });
     }
   };
 
-  seleccionarDimension = (valor) => {
-    if (valor == "1") {
-      this.setState({
-        listaDeServicios: ["CHILEXPRESS"],
-        listaDeServiciosAMostrar: ["CHILEXPRESS"],
-      });
-    } else if (valor == "2") {
-      this.setState({
-        listaDeServicios: ["INDAP", "SAG"],
-        listaDeServiciosAMostrar: ["INDAP", "SAG"],
-      });
-    } else if (valor == "3") {
-      this.setState({
-        listaDeServicios: ["CAMAS HOSPITALARIAS"],
-        listaDeServiciosAMostrar: ["CAMAS HOSPITALARIAS"],
-      });
+  handleSelectUrbanosServicios = (selectedList) => {
+    // Filtra los elementos con urbano igual a "TODOS"
+    const elementosConTodos = selectedList.filter(
+      (elemento) =>
+        elemento.urbano === "TODA LA REGIÓN DE LOS RÍOS" ||
+        elemento.urbano === "TODA LA REGIÓN DE LA ARAUCANÍA"
+    );
+    const elementosConTodosAnterior =
+      this.state.selectedUrbanosServicios.filter(
+        (elemento) =>
+          elemento.urbano === "TODA LA REGIÓN DE LOS RÍOS" ||
+          elemento.urbano === "TODA LA REGIÓN DE LA ARAUCANÍA"
+      );
+
+    if (!sonListasIguales(elementosConTodosAnterior, elementosConTodos)) {
+      if (elementosConTodosAnterior.length < elementosConTodos.length) {
+        // Cuando hay un nuevo "todos"
+        const regionObjtivo = elementosConTodos.filter(
+          (elemento) => !elementosConTodosAnterior.includes(elemento)
+        );
+        const urbanoDeRegion = this.obtenerZonasUrbanas().filter(
+          (item) => item.nombreRegion === regionObjtivo[0].nombreRegion
+        );
+        const lista = [...new Set([...selectedList, ...urbanoDeRegion])];
+        const listaSinRepetidos = [];
+        const comprobarDuplicados = {};
+
+        for (const elemento of lista) {
+          const claveUnica = elemento.nombreComuna; // O usa otra clave única según tus necesidades
+
+          if (!comprobarDuplicados[claveUnica]) {
+            listaSinRepetidos.push(elemento);
+            comprobarDuplicados[claveUnica] = true;
+          }
+        }
+        console.log(listaSinRepetidos);
+        this.setState({ selectedUrbanosServicios: listaSinRepetidos });
+      } else {
+        // Cuando se desmarca uno "todos"
+        const regionObjtivo = elementosConTodosAnterior.filter(
+          (elemento) => !elementosConTodos.includes(elemento)
+        );
+        const urbanoDeRegion = this.obtenerZonasUrbanas().filter(
+          (item) => item.nombreRegion === regionObjtivo[0].nombreRegion
+        );
+        const lista = urbanoDeRegion.filter((elemento) =>
+          selectedList.includes(elemento)
+        );
+        this.setState({ selectedUrbanosServicios: lista });
+      }
     } else {
-      this.setState({
-        listaDeServicios: [
-          "CAMAS HOSPITALARIAS",
-          "CHILEXPRESS",
-          "INDAP",
-          "SAG",
-          "CAPREDENA",
-        ],
-        listaDeServiciosAMostrar: [
-          "CAMAS HOSPITALARIAS",
-          "CHILEXPRESS",
-          "INDAP",
-          "SAG",
-          "CAPREDENA",
-        ],
-      });
+      if (this.state.selectedUrbanosServicios.length > selectedList.length) {
+        const elementoQuitado = this.state.selectedUrbanosServicios.filter(
+          (elemento) => !selectedList.includes(elemento)
+        );
+        selectedList = selectedList.filter((elemento) => {
+          // Compara cada elemento con el objeto que deseas eliminar
+          return elemento.urbano !== "TODA LA " + elementoQuitado[0].nombreRegion;
+        });
+        console.log("elemento quitado");
+      } else {
+        console.log("elemento agregado");
+      }
+
+      this.setState({ selectedUrbanosServicios: selectedList });
     }
   };
 
   render() {
+    const listaDimensionesIndicadores =
+      this.actualizarListaDimensionesIndicadores();
+    const listaZonasUrbanas = this.obtenerZonasUrbanas();
+    const nombresRegionesSet = new Set();
+
+    const nombresRegiones = listaZonasUrbanas.reduce((result, ciudad) => {
+      if (!nombresRegionesSet.has(ciudad.nombreRegion)) {
+        nombresRegionesSet.add(ciudad.nombreRegion);
+        result.push({
+          nombreRegion: ciudad.nombreRegion,
+          urbano: "TODA LA " + ciudad.nombreRegion,
+        });
+      }
+      return result;
+    }, []);
+
     return (
       <div className="analisisComparativo p-1 pt-4  mt-3">
         <h3 className="titulos-dashboard text-center">ANÁLISIS COMPARATIVO</h3>
@@ -138,11 +326,11 @@ export default class AnalisisComparativo extends React.Component {
           </Row>
           <Row className="fila-comparativo">
             <Col lg className="analisis-boxs m-3 py-3 columna-comparativo">
-              <GradicoComparativoCiudadesDimensiones
+              {/*<GradicoComparativoCiudadesDimensiones
                 ciudades={this.state.listaComunas}
                 servicios={this.props.servicios}
                 listaDeServiciosAMostrar={this.state.listaDeServicios}
-              />
+              />*/}
             </Col>
             <Col
               lg
@@ -155,30 +343,29 @@ export default class AnalisisComparativo extends React.Component {
               >
                 <div className="p-2">
                   CIUDADES
-                  <Form.Select aria-label="Default select">
-                    <option>Ciudades</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
+                  <Multiselect
+                    selectedValues={this.state.selectedUrbanosDimensiones}
+                    onSelect={this.handleSelectUrbanosDimensiones}
+                    onRemove={this.handleSelectUrbanosDimensiones}
+                    options={[...nombresRegiones, ...listaZonasUrbanas]}
+                    displayValue="urbano"
+                    groupBy="nombreRegion"
+                    showCheckbox
+                  />
                 </div>
                 <div className="p-2 ">
-                  {"DIMENSIÓN (ES)"}
-                  <Form.Select aria-label="Default select">
-                    <option>{"Dimensión (es)"}</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
-                </div>
-                <div className="p-2">
-                  SERVICIOS
-                  <Form.Select aria-label="Default select">
-                    <option>Servicios</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
+                  DIMENSIÓN / SERVICIOS
+                  <Multiselect
+                    isObject={false}
+                    onRemove={(event) => {
+                      console.log(event);
+                    }}
+                    onSelect={(event) => {
+                      console.log(event);
+                    }}
+                    options={listaDimensionesIndicadores}
+                    showCheckbox
+                  />
                 </div>
               </div>
             </Col>
@@ -198,7 +385,31 @@ export default class AnalisisComparativo extends React.Component {
             >
               <Row>
                 <Col className="analisis-boxs panel-comparativo m-3 py-3">
-                  Otros parámetros??
+                  <div className="p-2">
+                  CIUDADES
+                  <Multiselect
+                    selectedValues={this.state.selectedUrbanosServicios}
+                    onSelect={this.handleSelectUrbanosServicios}
+                    onRemove={this.handleSelectUrbanosServicios}
+                    options={[...nombresRegiones, ...listaZonasUrbanas]}
+                    displayValue="urbano"
+                    groupBy="nombreRegion"
+                    showCheckbox
+                  />
+                  </div>
+                  <div className="p-2">
+                    SERVICIOS
+                    <Form.Select aria-label="Default select">
+                      <option>Servicios</option>
+                      {this.state.nombreIndicadores.map((indicador) => {
+                        return (
+                          <option key={indicador["Codificación"]}>
+                            {indicador["Indicador o variable"]}
+                          </option>
+                        );
+                      })}
+                    </Form.Select>
+                  </div>
                 </Col>
               </Row>
               <Row className="flex-column align-items-center">
@@ -210,9 +421,9 @@ export default class AnalisisComparativo extends React.Component {
                     </Button>
                   </a>
                   <a href="datosTest.json" download="datosTest.json">
-                  <Button className="color-secundario w-100">
-                    <img src="./plusIcon.svg" alt="Plus Icon" /> Obtener datos
-                  </Button>
+                    <Button className="color-secundario w-100">
+                      <img src="./plusIcon.svg" alt="Plus Icon" /> Obtener datos
+                    </Button>
                   </a>
                 </Col>
               </Row>

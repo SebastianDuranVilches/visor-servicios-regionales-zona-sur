@@ -10,11 +10,8 @@ import {
   GeoJSON,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-//import "./mapaDeServicios.css";
-//import geoJsonData from "../../datosDePrueba/Mancha_Urbana_2017.json";
-import geoJsonData from "../../../../datosDePrueba/Mancha_Urbana_2017.json";
+import geoJsonData from "../../../../../public/data/Mancha_Urbana_2017.json";
 
-//-39.821148, -73.237661
 const position = [-39.821148, -73.237661];
 
 const WindroseControl = () => {
