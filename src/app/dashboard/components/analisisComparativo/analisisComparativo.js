@@ -50,6 +50,8 @@ export default class AnalisisComparativo extends React.Component {
       listaIndicadores: [],
       selectedUrbanosDimensiones: [],
       selectedUrbanosServicios: [],
+      comparativoDimensiones: [],
+      NombreServicioComparativa: { nombre: "Seleccione un servicio" },
     };
   }
 
@@ -159,6 +161,18 @@ export default class AnalisisComparativo extends React.Component {
     });
   }
 
+  handleComparativoDimensionesNoSelect = (selectedList) => {
+    this.setState({
+      comparativoDimensiones: selectedList,
+    });
+  };
+
+  handleComparativoDimensionesSelect = (selectedList) => {
+    this.setState({
+      comparativoDimensiones: selectedList,
+    });
+  };
+
   handleSelectUrbanosDimensiones = (selectedList) => {
     // Filtra los elementos con urbano igual a "TODOS"
     const elementosConTodos = selectedList.filter(
@@ -187,25 +201,21 @@ export default class AnalisisComparativo extends React.Component {
         const comprobarDuplicados = {};
 
         for (const elemento of lista) {
-          const claveUnica = elemento.nombreComuna; // O usa otra clave única según tus necesidades
+          const claveUnica = elemento.urbano; // O usa otra clave única según tus necesidades
 
           if (!comprobarDuplicados[claveUnica]) {
             listaSinRepetidos.push(elemento);
             comprobarDuplicados[claveUnica] = true;
           }
         }
-        console.log(listaSinRepetidos);
         this.setState({ selectedUrbanosDimensiones: listaSinRepetidos });
       } else {
         // Cuando se desmarca uno "todos"
         const regionObjtivo = elementosConTodosAnterior.filter(
           (elemento) => !elementosConTodos.includes(elemento)
         );
-        const urbanoDeRegion = this.obtenerZonasUrbanas().filter(
-          (item) => item.nombreRegion === regionObjtivo[0].nombreRegion
-        );
-        const lista = urbanoDeRegion.filter((elemento) =>
-          selectedList.includes(elemento)
+        const lista = selectedList.filter(
+          (elemento) => elemento.nombreRegion !== regionObjtivo[0].nombreRegion
         );
         this.setState({ selectedUrbanosDimensiones: lista });
       }
@@ -216,11 +226,11 @@ export default class AnalisisComparativo extends React.Component {
         );
         selectedList = selectedList.filter((elemento) => {
           // Compara cada elemento con el objeto que deseas eliminar
-          return elemento.urbano !== "TODA LA " + elementoQuitado[0].nombreRegion;
+          return (
+            elemento.urbano !== "TODA LA " + elementoQuitado[0].nombreRegion
+          );
         });
-        console.log("elemento quitado");
       } else {
-        console.log("elemento agregado");
       }
 
       this.setState({ selectedUrbanosDimensiones: selectedList });
@@ -262,7 +272,6 @@ export default class AnalisisComparativo extends React.Component {
             comprobarDuplicados[claveUnica] = true;
           }
         }
-        console.log(listaSinRepetidos);
         this.setState({ selectedUrbanosServicios: listaSinRepetidos });
       } else {
         // Cuando se desmarca uno "todos"
@@ -284,15 +293,23 @@ export default class AnalisisComparativo extends React.Component {
         );
         selectedList = selectedList.filter((elemento) => {
           // Compara cada elemento con el objeto que deseas eliminar
-          return elemento.urbano !== "TODA LA " + elementoQuitado[0].nombreRegion;
+          return (
+            elemento.urbano !== "TODA LA " + elementoQuitado[0].nombreRegion
+          );
         });
-        console.log("elemento quitado");
       } else {
-        console.log("elemento agregado");
       }
 
       this.setState({ selectedUrbanosServicios: selectedList });
     }
+  };
+
+  handleSelectUrbanosMapa = (selectedList) => {
+    this.setState({ selectedUrbanosServicios: selectedList });
+  };
+
+  handleNoSelectUrbanosMapa = (selectedList) => {
+    this.setState({ selectedUrbanosServicios: selectedList });
   };
 
   render() {
@@ -312,6 +329,12 @@ export default class AnalisisComparativo extends React.Component {
       return result;
     }, []);
 
+    const ciudadesComparativa = this.state.selectedUrbanosDimensiones.filter(
+      (elemento) =>
+        elemento.urbano !== "TODA LA REGIÓN DE LOS RÍOS" &&
+        elemento.urbano !== "TODA LA REGIÓN DE LA ARAUCANÍA"
+    );
+
     return (
       <div className="analisisComparativo p-1 pt-4  mt-3">
         <h3 className="titulos-dashboard text-center">ANÁLISIS COMPARATIVO</h3>
@@ -321,16 +344,16 @@ export default class AnalisisComparativo extends React.Component {
               className="analisis-boxs m-3"
               style={{ padding: "0px", minHeight: "358.294px" }}
             >
-              <MapaComparativo />
+              <MapaComparativo ciudades={this.state.selectedUrbanosServicios} />
             </Col>
           </Row>
           <Row className="fila-comparativo">
             <Col lg className="analisis-boxs m-3 py-3 columna-comparativo">
-              {/*<GradicoComparativoCiudadesDimensiones
-                ciudades={this.state.listaComunas}
-                servicios={this.props.servicios}
-                listaDeServiciosAMostrar={this.state.listaDeServicios}
-              />*/}
+              <GradicoComparativoCiudadesDimensiones
+                ciudades={this.state.selectedUrbanosServicios}
+                servicios={this.state.valorPorCiudadIndicador}
+                listaDeServiciosAMostrar={this.state.comparativoDimensiones}
+              />
             </Col>
             <Col
               lg
@@ -338,34 +361,60 @@ export default class AnalisisComparativo extends React.Component {
               style={{ maxWidth: "358.294px" }}
             >
               <div
-                className="d-flex flex-column justify-content-between"
-                style={{ height: "100%" }}
+                className="d-flex flex-column"
               >
+                <div className="p-2">
+                  <a>
+                    <Button className="color-terciario w-100" onClick={() => {
+                      this.setState({
+                        comparativoDimensiones: [],
+                        selectedUrbanosServicios: [],
+                      });
+                    }}>
+                      <img src="./plusIcon.svg" alt="Plus Icon"/> Limpiar
+                      gráfico
+                    </Button>
+                  </a>
+                </div>
                 <div className="p-2">
                   CIUDADES
                   <Multiselect
-                    selectedValues={this.state.selectedUrbanosDimensiones}
-                    onSelect={this.handleSelectUrbanosDimensiones}
-                    onRemove={this.handleSelectUrbanosDimensiones}
-                    options={[...nombresRegiones, ...listaZonasUrbanas]}
+                    selectedValues={this.state.selectedUrbanosServicios}
+                    onSelect={this.handleSelectUrbanosMapa}
+                    onRemove={this.handleNoSelectUrbanosMapa}
+                    options={listaZonasUrbanas}
                     displayValue="urbano"
                     groupBy="nombreRegion"
+                    selectionLimit={10}
                     showCheckbox
+                    style={{
+                      chips: { background: "#634F4E", zIndex: -1000, display: "none" },
+                      searchBox: {
+                        /*maxHeight:"74px"*/
+                      },
+                    }}
                   />
                 </div>
                 <div className="p-2 ">
                   DIMENSIÓN / SERVICIOS
-                  <Multiselect
-                    isObject={false}
-                    onRemove={(event) => {
-                      console.log(event);
-                    }}
-                    onSelect={(event) => {
-                      console.log(event);
-                    }}
-                    options={listaDimensionesIndicadores}
-                    showCheckbox
-                  />
+                  <div>
+                    <Multiselect
+                      selectedValues={this.state.comparativoDimensiones}
+                      onSelect={this.handleComparativoDimensionesNoSelect}
+                      onRemove={this.handleComparativoDimensionesSelect}
+                      options={this.state.nombreIndicadores}
+                      displayValue="Indicador o variable"
+                      groupBy="Dimensión"
+                      selectionLimit={7}
+                      showCheckbox
+                      style={{
+                        chips: { background: "#634F4E", zIndex: -1000, display: "none" },
+                        searchBox: {
+                          /*maxHeight:"74px"*/
+                        },
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </Col>
@@ -376,7 +425,11 @@ export default class AnalisisComparativo extends React.Component {
               className="analisis-boxs m-3 py-3 columna-comparativo"
               style={{ paddingLeft: "30px" }}
             >
-              <GraficoComparativoUnServicio />
+              <GraficoComparativoUnServicio
+                ciudades={this.state.selectedUrbanosDimensiones}
+                servicio={this.state.NombreServicioComparativa}
+                servicios={this.state.valorPorCiudadIndicador}
+              />
             </Col>
             <Col
               lg
@@ -384,31 +437,68 @@ export default class AnalisisComparativo extends React.Component {
               style={{ maxWidth: "388.294px" }}
             >
               <Row>
-                <Col className="analisis-boxs panel-comparativo m-3 py-3">
-                  <div className="p-2">
-                  CIUDADES
-                  <Multiselect
-                    selectedValues={this.state.selectedUrbanosServicios}
-                    onSelect={this.handleSelectUrbanosServicios}
-                    onRemove={this.handleSelectUrbanosServicios}
-                    options={[...nombresRegiones, ...listaZonasUrbanas]}
-                    displayValue="urbano"
-                    groupBy="nombreRegion"
-                    showCheckbox
-                  />
-                  </div>
-                  <div className="p-2">
-                    SERVICIOS
-                    <Form.Select aria-label="Default select">
-                      <option>Servicios</option>
-                      {this.state.nombreIndicadores.map((indicador) => {
-                        return (
-                          <option key={indicador["Codificación"]}>
-                            {indicador["Indicador o variable"]}
-                          </option>
-                        );
-                      })}
-                    </Form.Select>
+                <Col className="analisis-boxs panel-comparativo m-3 py-3"  >
+                  <div
+                    
+                  >
+                    <div className="p-2">
+                      <a>
+                        <Button className="color-terciario w-100"onClick={() => {
+                      this.setState({
+                        selectedUrbanosDimensiones: [],
+                      });
+                    }}>
+                          <img src="./plusIcon.svg" alt="Plus Icon" /> Limpiar
+                          gráfico
+                        </Button>
+                      </a>
+                    </div>
+                    <div className="p-2">
+                      CIUDADES
+                      <Multiselect
+                        selectedValues={this.state.selectedUrbanosDimensiones}
+                        onSelect={this.handleSelectUrbanosDimensiones}
+                        onRemove={this.handleSelectUrbanosDimensiones}
+                        options={[...nombresRegiones, ...listaZonasUrbanas]}
+                        displayValue="urbano"
+                        groupBy="nombreRegion"
+                        showCheckbox
+                        style={{
+                          chips: { background: "#634F4E", zIndex: -1000, display: "none" },
+                          searchBox: {
+                            /*maxHeight:"74px"*/
+                          },
+                        }}
+                      />
+                    </div>
+                    <div className="p-2">
+                      SERVICIOS
+                      <Form.Select
+                        onChange={(e) => {
+                          const selectedValue = e.target.value;
+                          const [codificacion, nombre] =
+                            selectedValue.split("-"); // Cambia '-' al carácter que desees usar como separador
+                          this.setState({
+                            NombreServicioComparativa: {
+                              Codificación: codificacion,
+                              nombre: nombre,
+                            },
+                          });
+                        }}
+                      >
+                        <option>Servicios</option>
+                        {this.state.nombreIndicadores.map((indicador) => {
+                          return (
+                            <option
+                              key={indicador["Codificación"]}
+                              value={`${indicador["Codificación"]}-${indicador["Indicador o variable"]}`}
+                            >
+                              {indicador["Indicador o variable"]}
+                            </option>
+                          );
+                        })}
+                      </Form.Select>
+                    </div>
                   </div>
                 </Col>
               </Row>

@@ -1,5 +1,27 @@
 import React from "react";
-import ReactApexChart from 'react-apexcharts';
+import ReactApexChart from "react-apexcharts";
+
+function quitarTildes(cadena) {
+  const tildes = {
+    á: "a",
+    é: "e",
+    í: "i",
+    ó: "o",
+    ú: "u",
+    Á: "A",
+    É: "E",
+    Í: "I",
+    Ó: "O",
+    Ú: "U",
+  };
+    // Reemplazar tildes
+    cadena = cadena.replace(/[áéíóúÁÉÍÓÚ]/g, (letra) => tildes[letra] || letra);
+
+    // Eliminar espacios al final de la cadena
+    cadena = cadena.trim();
+  
+    return cadena;
+}
 
 export default class GradicoComparativoCiudadesDimensiones extends React.Component {
   constructor(props) {
@@ -9,43 +31,44 @@ export default class GradicoComparativoCiudadesDimensiones extends React.Compone
       options: {
         chart: {
           toolbar: {
-            show: false,
+            show: true,
           },
         },
         plotOptions: {
           heatmap: {
+            distributed: true,
             enableShades: false,
             colorScale: {
               ranges: [
                 {
                   from: 0,
                   to: 19,
-                  color: '#5A1A16',
-                  name: 'Low',
+                  color: "#5A1A16",
+                  name: "Low",
                 },
                 {
                   from: 20,
                   to: 39,
-                  color: '#4B3134',
-                  name: 'Low Medium',
+                  color: "#4B3134",
+                  name: "Low Medium",
                 },
                 {
                   from: 40,
                   to: 59,
-                  color: '#2E3135',
-                  name: 'Medium',
+                  color: "#2E3135",
+                  name: "Medium",
                 },
                 {
                   from: 60,
                   to: 90,
-                  color: '#64464A',
-                  name: 'High Medium',
+                  color: "#64464A",
+                  name: "High Medium",
                 },
                 {
                   from: 91,
                   to: 10000,
-                  color: '#66AEAE',
-                  name: 'High',
+                  color: "#66AEAE",
+                  name: "High",
                 },
               ],
             },
@@ -59,59 +82,93 @@ export default class GradicoComparativoCiudadesDimensiones extends React.Compone
           show: false
         },*/
         xaxis: {
-          type: 'category',
-          categories: props.listaDeServiciosAMostrar,
+          type: "category",
+          categories: props.listaDeServiciosAMostrar.map(
+            (servicios) => servicios["Indicador o variable"]
+          ),
         },
       },
-      series: this.generateRandomData(props),
+      series: this.generateData(props),
     };
   }
 
-  generateRandomData = (props) => {
-    //const cities = ['Santiago', 'Valparaíso', 'Concepción', 'Antofagasta', 'La Serena'];
-    //const features = ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10'];
+  generateData = (props) => {
     const data = [];
     const cities = [];
 
     for (let i = 0; i < props.ciudades.length; i++) {
-      cities.push(props.ciudades[i])
-    };
+      cities.push(props.ciudades[i]);
+    }
 
     for (let i = 0; i < cities.length; i++) {
       const cityData = [];
-      for (let j = 0; j < props.listaDeServiciosAMostrar.length; j++){
-        const ciudadEncontrada = props.servicios.find(ciudad => ciudad.CIUDAD === cities[i]);
-        cityData.push(ciudadEncontrada[props.listaDeServiciosAMostrar[j]]);
-      };
-      data.push({ name: cities[i], data: cityData });
+      for (let j = 0; j < props.listaDeServiciosAMostrar.length; j++) {
+        let ciudadEncontrada = props.servicios.find((ciudad) =>
+          quitarTildes(ciudad["Entidad urbana"].toUpperCase()).includes(
+            quitarTildes(cities[i].urbano.toUpperCase())
+          )
+        );
+
+        if (!ciudadEncontrada) {
+          console.log("anterior");
+          ciudadEncontrada = props.servicios.find((ciudad) =>
+          quitarTildes(ciudad["Entidad urbana"].toUpperCase()).includes(
+            quitarTildes(cities[i].nombreComuna.toUpperCase())
+          )
+        );
+        }
+
+        if (!ciudadEncontrada) {
+          console.log("anterior");
+          ciudadEncontrada = props.servicios.find((ciudad) =>
+          quitarTildes(cities[i].urbano.toUpperCase()).includes(
+            quitarTildes(ciudad["Entidad urbana"].toUpperCase())
+          )
+        );
+        }
+
+
+        cityData.push(
+          ciudadEncontrada[props.listaDeServiciosAMostrar[j]["Codificación"]]
+        );
+      }
+      data.push({ name: cities[i].urbano, data: cityData });
     }
     return data;
   };
 
-  establecerNuevoGrafico(){
+  establecerNuevoGrafico() {
     this.setState((prevState) => ({
       options: {
         ...prevState.options,
         xaxis: {
           ...prevState.options.xaxis,
-          categories: this.props.listaDeServiciosAMostrar,
+          categories: this.props.listaDeServiciosAMostrar.map(
+            (servicios) => servicios["Indicador o variable"]
+          ),
         },
       },
     }));
-    this.setState((prevState) => ({ series: this.generateRandomData(this.props) }));
-  };
+    this.setState((prevState) => ({
+      series: this.generateData(this.props),
+    }));
+  }
 
-  establecerCiudades(){
-    this.setState((prevState) => ({ series: this.generateRandomData(this.props) }));
-  };
+  establecerCiudades() {
+    this.setState((prevState) => ({
+      series: this.generateData(this.props),
+    }));
+  }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.listaDeServiciosAMostrar !== prevProps.listaDeServiciosAMostrar) {
+    if (
+      this.props.listaDeServiciosAMostrar !== prevProps.listaDeServiciosAMostrar
+    ) {
       this.establecerNuevoGrafico();
-    };
-    if(this.props.ciudades !== prevProps.ciudades){
+    }
+    if (this.props.ciudades !== prevProps.ciudades) {
       this.establecerCiudades();
-    };
+    }
   }
 
   render() {
