@@ -344,7 +344,12 @@ export default class AnalisisComparativo extends React.Component {
               className="analisis-boxs m-3"
               style={{ padding: "0px", minHeight: "358.294px" }}
             >
-              <MapaComparativo ciudades={this.state.selectedUrbanosServicios} />
+              <MapaComparativo 
+              ciudades={this.state.selectedUrbanosServicios} 
+              servicios={this.state.comparativoDimensiones}
+              dataServicios={this.state.valorPorCiudadIndicador}
+              rangos={this.state.rangosIndicadores}
+              />
             </Col>
           </Row>
           <Row className="fila-comparativo">
@@ -372,7 +377,7 @@ export default class AnalisisComparativo extends React.Component {
                       });
                     }}>
                       <img src="./plusIcon.svg" alt="Plus Icon"/> Limpiar
-                      gráfico
+                      gráfico y mapa
                     </Button>
                   </a>
                 </div>
@@ -419,6 +424,7 @@ export default class AnalisisComparativo extends React.Component {
               </div>
             </Col>
           </Row>
+          <hr/>
           <Row className="fila-comparativo">
             <Col
               lg

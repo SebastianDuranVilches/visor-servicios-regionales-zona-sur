@@ -13,8 +13,31 @@ import {
 import "leaflet/dist/leaflet.css";
 import geoJsonData from "../../../../../public/data/Mancha_Urbana_2017.json";
 import { Form } from "react-bootstrap";
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-const position = [-39.821148, -73.237661];
+const position = [-38.99021947302409, -72.64751008365442];
+
+function quitarTildes(cadena) {
+  const tildes = {
+    á: "a",
+    é: "e",
+    í: "i",
+    ó: "o",
+    ú: "u",
+    Á: "A",
+    É: "E",
+    Í: "I",
+    Ó: "O",
+    Ú: "U",
+  };
+  // Reemplazar tildes
+  cadena = cadena.replace(/[áéíóúÁÉÍÓÚ]/g, (letra) => tildes[letra] || letra);
+
+  // Eliminar espacios al final de la cadena
+  cadena = cadena.trim();
+
+  return cadena;
+}
 
 const WindroseControl = () => {
   return (
@@ -51,36 +74,35 @@ function calcularCentroPoligono(geoJSON) {
   return null; // Devuelve null si no se pudo calcular el centro
 }
 
-function calculoDePoligonos (geoJSON){
+function calculoDePoligonos(geoJSON) {
   const coordinates = geoJSON; // Suponiendo que las coordenadas son un anillo exterior
 
-    if (coordinates.length > 0) {
-      // Inicializa las sumas de latitud y longitud
-      let sumLatitud = 0;
-      let sumLongitud = 0;
+  if (coordinates.length > 0) {
+    // Inicializa las sumas de latitud y longitud
+    let sumLatitud = 0;
+    let sumLongitud = 0;
 
-      // Suma las coordenadas de los vértices
-      for (const coord of coordinates) {
-        sumLatitud += coord[1];
-        sumLongitud += coord[0];
-      }
-
-      // Calcula el centro dividiendo por el número de vértices
-      const centroLatitud = sumLatitud / coordinates.length;
-      const centroLongitud = sumLongitud / coordinates.length;
-
-      return [centroLongitud, centroLatitud]; // Importante: [longitud, latitud]
+    // Suma las coordenadas de los vértices
+    for (const coord of coordinates) {
+      sumLatitud += coord[1];
+      sumLongitud += coord[0];
     }
+
+    // Calcula el centro dividiendo por el número de vértices
+    const centroLatitud = sumLatitud / coordinates.length;
+    const centroLongitud = sumLongitud / coordinates.length;
+
+    return [centroLongitud, centroLatitud]; // Importante: [longitud, latitud]
+  }
 }
 
 function calcularCentroMultiPoligonos(geoJSON) {
   const { type, coordinates } = geoJSON.geometry;
   // Caso para múltiples polígonos
   const centros = coordinates.map((polygonCoordinates) =>
-  calculoDePoligonos(polygonCoordinates[0])
+    calculoDePoligonos(polygonCoordinates[0])
   );
-  console.log(coordinates);
-  console.log(centros);
+
   // Calcula el centro promedio de los polígonos
   if (centros.length > 0) {
     const sumLatitud = centros.reduce((sum, centro) => sum + centro[1], 0);
@@ -102,14 +124,87 @@ export default class MapaComparativo extends React.Component {
       ciudades: [],
       servicios: [],
       servicio: null,
+      dataServicios: this.props.dataServicios,
+      rangos: this.props.rangos,
+      marcas: [],
     };
   }
-  // Supongamos que tienes una lista de ciudades a destacar
-  componentDidUpdate(prevProps) {
+
+  componentDidUpdate(prevProps,prevState) {
     if (this.props.ciudades !== prevProps.ciudades) {
       this.setState({
         ciudades: this.props.ciudades.map((ciudad) => ciudad.urbano),
       });
+    }
+    if (this.props.servicios !== prevProps.servicios) {
+      this.setState({
+        servicios: this.props.servicios.map((servicio) => servicio),
+      });
+    }
+    if (this.props.dataServicios !== prevProps.dataServicios) {
+      this.setState({
+        dataServicios: this.props.dataServicios,
+      });
+    }
+    if (this.props.rangos !== prevProps.rangos) {
+      this.setState({
+        rangos: this.props.rangos,
+      });
+    }
+    if (this.state.servicio !== prevState.servicio ||
+      this.state.ciudades !== prevState.ciudades) {
+      const marcas = this.crearCircleMarkers();
+      this.setState({ marcas });
+    }
+  }
+
+  obtenerDatosDeServicioDeCiudad(ciudadBuscada) {
+    let ciudadEncontrada = this.state.dataServicios.find((ciudad) =>
+      quitarTildes(ciudad["Entidad urbana"].toUpperCase()).includes(
+        quitarTildes(ciudadBuscada.URBANO.toUpperCase())
+      )
+    );
+
+    if (!ciudadEncontrada) {
+      ciudadEncontrada = this.state.dataServicios.find((ciudad) =>
+        quitarTildes(ciudad["Entidad urbana"].toUpperCase()).includes(
+          quitarTildes(ciudadBuscada["NOM_COMUNA"].toUpperCase())
+        )
+      );
+    }
+
+    if (!ciudadEncontrada) {
+      ciudadEncontrada = this.state.dataServicios.find((ciudad) =>
+        quitarTildes(ciudadBuscada.URBANO.toUpperCase()).includes(
+          quitarTildes(ciudad["Entidad urbana"].toUpperCase())
+        )
+      );
+    }
+    return ciudadEncontrada[this.state.servicio];
+  }
+
+  obtenerRangosDeServicio(region) {
+    if (this.state.servicio) {
+      const rangos = this.state.rangos.filter((rango) =>
+        quitarTildes(region.toUpperCase()).includes(
+          quitarTildes(rango.Region.toUpperCase())
+        )
+      );
+
+      const rango = rangos.find(
+        (rango) => rango.variable == this.state.servicio
+      );
+
+      if (rango) {
+        return {
+          bajo: rango.Bajo,
+          tbajo: rango["Termina_rang1_Empie_rang2"],
+          tmbajo: rango["Termina_rang2_Empie_rang3"],
+          tmedio: rango["Termina_rang3_Empie_rang4"],
+          tmalto: rango["Termina_rang4_Empie_rang5"],
+          alto: rango.Alto,
+        };
+      }
     }
   }
 
@@ -120,15 +215,46 @@ export default class MapaComparativo extends React.Component {
       const ciudadGeometry = geoJsonData.features.find(
         (feature) => feature.properties.URBANO === ciudad
       );
-      //console.log(calcularCentroMultiPoligonos(ciudadGeometry));
       if (ciudadGeometry) {
         // Extrae las coordenadas de la geometría
-        //const coordinates = ciudadGeometry.geometry.coordinates[0];
-        var coordinates = [0,0]
-        if(ciudadGeometry.geometry.type === "Polygon"){
+        var coordinates = [0, 0];
+        if (ciudadGeometry.geometry.type === "Polygon") {
           coordinates = calcularCentroPoligono(ciudadGeometry);
-        }else{
+        } else {
           coordinates = calcularCentroMultiPoligonos(ciudadGeometry);
+        }
+
+        //Busca el servicio correspondiente a la ciudad en el archivo GeoJSON
+        const valorServicio = this.obtenerDatosDeServicioDeCiudad(
+          ciudadGeometry.properties
+        );
+
+        const rango = this.obtenerRangosDeServicio(
+          ciudadGeometry.properties.NOM_REGION
+        );
+
+        var color = "blue";
+
+        if (rango) {
+          if (valorServicio > rango.bajo) {
+            color = "#0000FF";
+          }
+          if (valorServicio > rango.tbajo) {
+            color = "#008000";
+          }
+          if (valorServicio > rango.tmbajo) {
+            color = "#FFFF00";
+          }
+          if (valorServicio > rango.tmedio) {
+            color = "#fab32e";
+          }
+          if (valorServicio > rango.tmalto) {
+            color = "#ff4800";
+          }
+          if (valorServicio > rango.talto) {
+            color = "#FF0000";
+          }
+
         }
         // Crea un CircleMarker para la ciudad
         return (
@@ -136,10 +262,13 @@ export default class MapaComparativo extends React.Component {
             key={index}
             center={[coordinates[1], coordinates[0]]} // Importante: [latitud, longitud]
             radius={15} // Puedes ajustar el tamaño del círculo según tus preferencias
-            color="blue" // Puedes ajustar el color del círculo
+            color={color} // Puedes ajustar el color del círculo
             fillOpacity={0.5} // Ajusta la opacidad del círculo
           >
-            <Popup open={true}>{ciudad}</Popup>
+            <Popup open={true}>
+              <h6 className="text-center">{ciudad}</h6>
+              <p className="text-center"> Valor: {valorServicio}</p>
+            </Popup>
           </CircleMarker>
         );
       }
@@ -149,10 +278,12 @@ export default class MapaComparativo extends React.Component {
   }
 
   render() {
+
+
     return (
       <MapContainer
         center={position}
-        zoom={10}
+        zoom={7}
         scrollWheelZoom={true}
         className="mapaDeServicios"
         zoomControl={false}
@@ -169,13 +300,17 @@ export default class MapaComparativo extends React.Component {
         <ZoomControl position="topright" />
         <ScaleControl imperial={false} position="bottomright" />
         {/* Agrega los CircleMarkers para ciudades destacadas */}
-        {this.crearCircleMarkers()}
+        {this.state.marcas}
         {/* Agrega la leyenda en la parte inferior derecha */}
         <div className="leyenda-container">
-          <p>Leyenda: Tu leyenda aquí</p>
+          <h5>Leyenda</h5>
           <div className="leyenda-item">
             <div className="color alto"></div>
             Alto
+          </div>
+          <div className="leyenda-item">
+            <div className="color casi-alto"></div>
+            {/*<p>Medio-Alto</p>*/}
           </div>
           <div className="leyenda-item">
             <div className="color medio-alto"></div>
@@ -195,11 +330,24 @@ export default class MapaComparativo extends React.Component {
           </div>
         </div>
         <div className="select-container">
-          <Form.Select aria-label="Default select">
-            <option>Seleccionar</option>
-            <option>Valor 1</option>
-            <option>Valor 2</option>
-            <option>Valor 3</option>
+          <Form.Select
+            aria-label="Default select"
+            onChange={(e) => {this.setState({ servicio: e.target.value });
+            this.setState({ marcas: [] });
+            }}
+          >
+            <option key={1}>Seleccionar</option>
+            {this.state.servicios.map((servicio) => {
+              return (
+                <option
+                  key={servicio["Codificación"]}
+                  value={servicio["Codificación"]}
+                >
+                  {servicio["Indicador o variable"]}
+                </option>
+              );
+            })}
+            ;
           </Form.Select>
         </div>
       </MapContainer>

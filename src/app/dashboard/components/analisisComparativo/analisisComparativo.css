@@ -89,9 +89,18 @@
   margin-right: 5px;
 }
 
+/* Estilos para el color "Alto" */
+.color.casi-alto {
+  background-color: #ff4800; /* Color rojo para "Alto" */
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
 /* Estilos para el color "Medio-Alto" */
 .color.medio-alto {
-  background-color: #FFA500; /* Color naranja para "Medio-Alto" */
+  background-color: #fab32e; /* Color naranja para "Medio-Alto" */
   width: 20px;
   height: 20px;
   margin-right: 5px;

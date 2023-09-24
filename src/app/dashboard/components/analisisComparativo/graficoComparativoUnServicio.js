@@ -126,7 +126,6 @@ export default class GraficoComparativoUnServicio extends React.Component {
     const datos = [];
     const cities = [];
 
-    console.log("establecer");
     for (let i = 0; i < props.ciudades.length; i++) {
       cities.push(props.ciudades[i]);
     }
@@ -214,7 +213,6 @@ export default class GraficoComparativoUnServicio extends React.Component {
       this.setState({
         options: options,
       });
-      console.log(this.state);
     }
   }
 
