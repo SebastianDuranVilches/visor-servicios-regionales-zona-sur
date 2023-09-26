@@ -33,7 +33,7 @@ export default class DashboardFunction extends React.Component {
 
       // Actualiza la variable de estado correspondiente
       this.setState((prevState) => ({
-        prevState, 
+        prevState,
         [estadoVariable]: datos,
         loading: false, // Establece la bandera de carga en falso cuando se completa la carga
       }));
@@ -45,13 +45,34 @@ export default class DashboardFunction extends React.Component {
   async componentDidMount() {
     // Cargar múltiples archivos Excel en paralelo
     const promises = [
-      this.cargarArchivoExcel("data/Indice_por_dimension.ods", "indiceDimension"),
-      this.cargarArchivoExcel("data/indice_provision_por_ciudad.ods", "indiceProvisionCiudad"),
-      this.cargarArchivoExcel("data/Rango_para_cada_indicador.ods", "rangosIndicadores"),
-      this.cargarArchivoExcel("data/Rangos_dimensiones.ods", "rangosDimensiones"),
-      this.cargarArchivoExcel("data/Rangos_indice_provision.ods", "rangosIndiceProvision"),
-      this.cargarArchivoExcel("data/Valor_por_ciudad_indicador.ods", "valorPorCiudadIndicador"),
-      this.cargarArchivoExcel("data/nombreIndicadores.ods", "nombreIndicadores"),
+      this.cargarArchivoExcel(
+        "data/Indice_por_dimension.ods",
+        "indiceDimension"
+      ),
+      this.cargarArchivoExcel(
+        "data/indice_provision_por_ciudad.ods",
+        "indiceProvisionCiudad"
+      ),
+      this.cargarArchivoExcel(
+        "data/Rango_para_cada_indicador.ods",
+        "rangosIndicadores"
+      ),
+      this.cargarArchivoExcel(
+        "data/Rangos_dimensiones.ods",
+        "rangosDimensiones"
+      ),
+      this.cargarArchivoExcel(
+        "data/Rangos_indice_provision.ods",
+        "rangosIndiceProvision"
+      ),
+      this.cargarArchivoExcel(
+        "data/Valor_por_ciudad_indicador.ods",
+        "valorPorCiudadIndicador"
+      ),
+      this.cargarArchivoExcel(
+        "data/nombreIndicadores.ods",
+        "nombreIndicadores"
+      ),
     ];
 
     try {
@@ -67,12 +88,12 @@ export default class DashboardFunction extends React.Component {
     if (this.state.loading) {
       return (
         <div className="superPosition-dashboard">
-        <main>
-        <Container className="my-0 p-3 background-back-dashboard">
-            <h1 style={{color: "black"}}>Cargando ...</h1>
-          </Container>
-        </main>
-      </div>
+          <main>
+            <Container className="my-0 p-3 background-back-dashboard">
+              <h1 style={{ color: "black" }}>Cargando ...</h1>
+            </Container>
+          </main>
+        </div>
       );
     }
 
@@ -80,7 +101,15 @@ export default class DashboardFunction extends React.Component {
       <div className="superPosition-dashboard">
         <main>
           <Container className="my-0 p-3 background-back-dashboard">
-            <AnalisisTerritorio></AnalisisTerritorio>
+            <AnalisisTerritorio
+              indiceDimension={this.state.indiceDimension}
+              indiceProvisionCiudad={this.state.indiceProvisionCiudad}
+              rangosIndicadores={this.state.rangosIndicadores}
+              rangosDimensiones={this.state.rangosDimensiones}
+              rangosIndiceProvision={this.state.rangosIndiceProvision}
+              valorPorCiudadIndicador={this.state.valorPorCiudadIndicador}
+              nombreIndicadores={this.state.nombreIndicadores}
+            ></AnalisisTerritorio>
             <AnalisisComparativo
               indiceDimension={this.state.indiceDimension}
               indiceProvisionCiudad={this.state.indiceProvisionCiudad}
