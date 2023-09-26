@@ -8,6 +8,8 @@ import {
   Marker,
   Popup,
   GeoJSON,
+  useMap,
+  CircleMarker,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 //import "./mapaDeServicios.css";
@@ -15,7 +17,7 @@ import "leaflet/dist/leaflet.css";
 import geoJsonData from "../../../../datosDePrueba/Mancha_Urbana_2017.json";
 
 //-39.821148, -73.237661
-const position = [-39.821148, -73.237661];
+//const position = [-39.821148, -73.237661];
 
 const WindroseControl = () => {
   return (
@@ -26,13 +28,201 @@ const WindroseControl = () => {
   );
 };
 
+function UpdateMapCentre(props) {
+  const map = useMap();
+  map.panTo(props.mapCentre);
+  return null;
+}
+
+function calcularCentroPoligono(geoJSON) {
+  if (geoJSON && geoJSON.geometry && geoJSON.geometry.type === "Polygon") {
+    const coordinates = geoJSON.geometry.coordinates[0]; // Suponiendo que las coordenadas son un anillo exterior
+
+    if (coordinates.length > 0) {
+      // Inicializa las sumas de latitud y longitud
+      let sumLatitud = 0;
+      let sumLongitud = 0;
+
+      // Suma las coordenadas de los vértices
+      for (const coord of coordinates) {
+        sumLatitud += coord[1];
+        sumLongitud += coord[0];
+      }
+
+      // Calcula el centro dividiendo por el número de vértices
+      const centroLatitud = sumLatitud / coordinates.length;
+      const centroLongitud = sumLongitud / coordinates.length;
+
+      return [centroLongitud, centroLatitud]; // Importante: [longitud, latitud]
+    }
+  }
+
+  return null; // Devuelve null si no se pudo calcular el centro
+}
+
+function calculoDePoligonos(geoJSON) {
+  const coordinates = geoJSON; // Suponiendo que las coordenadas son un anillo exterior
+
+  if (coordinates.length > 0) {
+    // Inicializa las sumas de latitud y longitud
+    let sumLatitud = 0;
+    let sumLongitud = 0;
+
+    // Suma las coordenadas de los vértices
+    for (const coord of coordinates) {
+      sumLatitud += coord[1];
+      sumLongitud += coord[0];
+    }
+
+    // Calcula el centro dividiendo por el número de vértices
+    const centroLatitud = sumLatitud / coordinates.length;
+    const centroLongitud = sumLongitud / coordinates.length;
+
+    return [centroLongitud, centroLatitud]; // Importante: [longitud, latitud]
+  }
+}
+
+function calcularCentroMultiPoligonos(geoJSON) {
+  const { type, coordinates } = geoJSON.geometry;
+  // Caso para múltiples polígonos
+  const centros = coordinates.map((polygonCoordinates) =>
+    calculoDePoligonos(polygonCoordinates[0])
+  );
+
+  // Calcula el centro promedio de los polígonos
+  if (centros.length > 0) {
+    const sumLatitud = centros.reduce((sum, centro) => sum + centro[1], 0);
+    const sumLongitud = centros.reduce((sum, centro) => sum + centro[0], 0);
+
+    const centroLatitud = sumLatitud / centros.length;
+    const centroLongitud = sumLongitud / centros.length;
+
+    return [centroLongitud, centroLatitud];
+  }
+
+  return null;
+}
+
 export default class MapaAnalisis extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      ciudad: "",
+      valor: 0,
+      rangos: [],
+      coordenadas: [-39.821148, -73.237661],
+      marcas: [],
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.ciudad !== this.props.ciudad ||
+      prevProps.valor !== this.props.valor ||
+      prevProps.rangos !== this.props.rangos
+    ) {
+      this.actualizarEstadoLocal();
+    }
+  }
+
+  actualizarEstadoLocal() {
+    // Actualiza el estado local con los nuevos props
+    this.setState(
+      {
+        ciudad: this.props.ciudad,
+        valor: this.props.valor,
+        rangos: this.props.rangos,
+      },
+      () => {
+        this.buscarPosicion();
+        this.setState({marcas: []}, () => { this.setState({marcas: this.crearCircleMarkers()}); })
+      }
+    );
+  }
+  
+
+  buscarPosicion() {
+      // Encuentra la geometría correspondiente a la ciudad en el archivo GeoJSON
+      const ciudadGeometry = geoJsonData.features.find(
+        (feature) => this.state.ciudad[0].urbano.includes(feature.properties.URBANO)
+      );
+
+      console.log(this.state.ciudad[0].urbano);
+      console.log(ciudadGeometry);
+
+      if (ciudadGeometry) {
+        // Extrae las coordenadas de la geometría
+        var coordinates = [0, 0];
+        if (ciudadGeometry.geometry.type === "Polygon") {
+          coordinates = calcularCentroPoligono(ciudadGeometry);
+        } else {
+          console.log(this.state.ciudad[0].urbano);
+          coordinates = calcularCentroMultiPoligonos(ciudadGeometry);
+        }
+
+        coordinates = [coordinates[1], coordinates[0]];
+        this.setState({ coordenadas: coordinates }, () => {
+          console.log(this.state.coordenadas);
+        });
+      } 
+  }
+
+  crearCircleMarkers() {
+    
+    var color = "blue";
+
+        if (this.state.rangos) {
+          if (this.state.valor > this.state.rangos[0]) {
+            color = "#0000FF";
+          }
+          if (this.state.valor > this.state.rangos[1]) {
+            color = "#008000";
+          }
+          if (this.state.valor > this.state.rangos[2]) {
+            color = "#FFFF00";
+          }
+          if (this.state.valor > this.state.rangos[3]) {
+            color = "#fab32e";
+          }
+          if (this.state.valor > this.state.rangos[4]) {
+            color = "#ff4800";
+          }
+          if (this.state.valor > this.state.rangos[5]) {
+            color = "#FF0000";
+          }
+
+        }
+
+    console.log(color);
+    // Crea un CircleMarker para la ciudad
+    return (
+      <CircleMarker
+        center={this.state.coordenadas} // Importante: [latitud, longitud]
+        radius={30} // Puedes ajustar el tamaño del círculo según tus preferencias
+        color={color} // Puedes ajustar el color del círculo
+        fillOpacity={0.1} // Ajusta la opacidad del círculo
+      >
+        <Popup open={true}>
+          <h6 className="text-center">{this.state.ciudad[0].urbano}</h6>
+          <p className="text-center"> Valor: {this.state.valor}</p>
+        </Popup>
+      </CircleMarker>
+    );
+  }
+
+  obtenerMarca(){
+    if(this.state.ciudad.urbano){
+      return this.crearCircleMarkers();
+    }
+  }
+
   render() {
     return (
       <MapContainer
-        center={position}
+        center={this.state.coordenadas}
         zoom={10}
-        scrollWheelZoom={true}
+        scrollWheelZoom={false}
         className="mapaDeServicios"
         zoomControl={false}
       >
@@ -42,11 +232,13 @@ export default class MapaAnalisis extends React.Component {
         />
         <GeoJSON data={geoJsonData} />
         <div className="windrose-container">
-          <WindroseControl />{" "}
+          <WindroseControl />
           {/* Agrega el componente del rosa de los vientos */}
         </div>
-        <ZoomControl position="topright"/>
+        {/*<ZoomControl position="topright" />*/}
+        {this.state.marcas}
         <ScaleControl imperial={false} position="bottomright" />
+        <UpdateMapCentre mapCentre={this.state.coordenadas} />
       </MapContainer>
     );
   }

@@ -13,6 +13,8 @@ const RadarChartAnalisis = dynamic(() => import("./radarChart"), {
   ssr: false,
 });
 
+//https://www.google.com/search?q=gama+colores+pasteles&oq=gama+colores+pasteles&gs_lcrp=EgZjaHJvbWUyCQgAEEUYORiABDIICAEQABgWGB4yCAgCEAAYFhgeMggIAxAAGBYYHjIICAQQABgWGB4yCAgFEAAYFhgeMggIBhAAGBYYHjIICAcQABgWGB7SAQg0NTI1ajBqN6gCALACAA&sourceid=chrome&ie=UTF-8#vhid=kAsNnUisJ8zz9M&vssid=l
+
 function quitarTildes(cadena) {
   const tildes = {
     á: "a",
@@ -34,7 +36,6 @@ function quitarTildes(cadena) {
 
   return cadena;
 }
-
 
 export default class AnalisisTerritorio extends React.Component {
   constructor(props) {
@@ -60,8 +61,8 @@ export default class AnalisisTerritorio extends React.Component {
       selectedUrbanosServicios: [],
       comparativoDimensiones: [],
       NombreServicioComparativa: { nombre: "Seleccione un servicio" },
-      medida: "",
-      subMedida: "",
+      tipo: "",
+      subTipo: "",
       valores: {
         valor: 0,
         maximo: 0,
@@ -119,57 +120,220 @@ export default class AnalisisTerritorio extends React.Component {
     return zonasUrbanas;
   };
 
-  cambiarValores = (subMedida) => {
-    this.setState({ subMedida: subMedida }, () => {
-      console.log(this.state.ciudad);
-      console.log(this.state.medida);
-      console.log(this.state.subMedida);
+  cambiarValores = (subTipo) => {
+    
+    this.setState({ subTipo: subTipo }, () => {
+      if (this.state.tipo == "Previsión" && subTipo !== "") {
+        const ciudadEncontrada = this.buscarCiudad(
+          this.state.ciudad[0],
+          this.state.indiceProvisionCiudad,
+          "Indice provisión",
+          "Entidad urbana"
+        );
+        const valoresCiudadesServicios =
+          this.obtenerValoresPorServicioDeCiudades(
+            this.state.indiceProvisionCiudad,
+            "Indice provisión"
+          );
+        const rangosIndiceProvision = this.obtenerRangosIndiceProvision();
 
-      if (this.state.medida == "Previsión") {
-        const ciudadEncontrada = this.buscarCiudad(this.state.ciudad[0],this.state.indiceProvisionCiudad, "Indice provisión");
-        console.log(ciudadEncontrada);
+        const { maximo, minimo, mediana, promedio } = this.calcularEstadisticas(
+          valoresCiudadesServicios
+        );
 
+        console.log(this.state.tipo)
+        this.setState({
+          valores: {
+            valor: ciudadEncontrada,
+            maximo: maximo,
+            minimo: minimo,
+            mediana: mediana,
+            promedio: promedio,
+            rangos: rangosIndiceProvision,
+          },
+        });
+      } else if (this.state.tipo == "Dimensión" && subTipo !== "") {
+         // DIMENSIONES
+        const ciudadEncontrada = this.buscarCiudad(
+          this.state.ciudad[0],
+          this.state.indiceDimension,
+          this.state.subTipo,
+          "Entidad urbana/dimensión"
+        );
+
+        const valoresCiudadesServicios =
+          this.obtenerValoresPorServicioDeCiudades(
+            this.state.indiceDimension,
+            this.state.subTipo
+          );
+
+        const rangosIndiceDimension = this.obtenerRangosIndiceDimension(
+          this.state.subTipo
+        );
+        const { maximo, minimo, mediana, promedio } = this.calcularEstadisticas(
+          valoresCiudadesServicios
+        );
+
+        this.setState({
+          valores: {
+            valor: ciudadEncontrada,
+            maximo: maximo,
+            minimo: minimo,
+            mediana: mediana,
+            promedio: promedio,
+            rangos: rangosIndiceDimension,
+          },
+        });
+      } else if (this.state.tipo === "Servicio" && subTipo !== "") {
+        const subTipo = this.state.subTipo.split("-");
+        const ciudadEncontrada = this.buscarCiudad(
+          this.state.ciudad[0],
+          this.state.valorPorCiudadIndicador,
+          subTipo[0],
+          "Entidad urbana"
+        );
+
+        const valoresCiudadesServicios =
+          this.obtenerValoresPorServicioDeCiudades(
+            this.state.valorPorCiudadIndicador,
+            subTipo[0]
+          );
+
+        const rangosIndicadores = this.obtenerRangosIndicadores(
+          subTipo[0],
+          this.state.ciudad[0].nombreRegion
+        );
+
+        const { maximo, minimo, mediana, promedio } = this.calcularEstadisticas(
+          valoresCiudadesServicios
+        );
+
+        this.setState({
+          valores: {
+            valor: ciudadEncontrada,
+            maximo: maximo,
+            minimo: minimo,
+            mediana: mediana,
+            promedio: promedio,
+            rangos: rangosIndicadores,
+          },
+        });
+      } else {
+        // Dejar en 0
+        this.setState({
+          valores: {
+            valor: 0,
+            maximo: 0,
+            minimo: 0,
+            mediana: 0,
+            promedio: 0,
+            rangos: [],
+          },
+        });
       }
-      if (this.state.medida == "Dimensión") {
-
-      }
-      if (this.state.medida === "Servicio") {
-
-      }
-      // Dejar en 0
     });
   };
 
-  buscarCiudad = (ciudadBuscada, medida,subMedida) => {
-    let ciudadEncontrada = medida.find((ciudad) =>
-    quitarTildes(ciudad["Entidad urbana"].toUpperCase()).includes(
-      quitarTildes(ciudadBuscada.urbano.toUpperCase())
-    )
-  );
+  calcularEstadisticas = (listaDeValores) => {
+    // Calcula el máximo
+    const maximo = Math.max(...listaDeValores);
 
-  if (!ciudadEncontrada) {
-    ciudadEncontrada = medida.find((ciudad) =>
-      quitarTildes(ciudad["Entidad urbana"].toUpperCase()).includes(
-        quitarTildes(ciudadBuscada["nombreComuna"].toUpperCase())
+    // Calcula el mínimo
+    const minimo = Math.min(...listaDeValores);
+
+    // Calcula la mediana
+    const sortedNumeros = [...listaDeValores].sort((a, b) => a - b);
+    const middle = Math.floor(sortedNumeros.length / 2);
+    const mediana =
+      sortedNumeros.length % 2 === 0
+        ? (sortedNumeros[middle - 1] + sortedNumeros[middle]) / 2
+        : sortedNumeros[middle];
+
+    // Calcula el promedio
+    const promedio =
+      listaDeValores.reduce((total, numero) => total + numero, 0) /
+      listaDeValores.length;
+
+    // Actualiza el estado con los resultados
+    return { maximo, minimo, mediana, promedio };
+  };
+
+  obtenerValoresPorServicioDeCiudades = (tipo, subTipo) => {
+    return tipo.map((valor) => valor[subTipo]);
+  };
+
+  obtenerRangosIndiceProvision = () => {
+    return [
+      this.state.rangosIndiceProvision[0]["Rango 1"],
+      this.state.rangosIndiceProvision[0]["Rango 2"],
+      this.state.rangosIndiceProvision[0]["Rango 3"],
+      this.state.rangosIndiceProvision[0]["Rango 4"],
+      this.state.rangosIndiceProvision[0]["Rango 5"],
+      this.state.rangosIndiceProvision[0]["Rango 6"],
+    ];
+  };
+
+  obtenerRangosIndiceDimension = (dimension) => {
+    const valores = this.state.rangosDimensiones.filter(
+      (valor) => valor["Dimension"] === dimension
+    );
+    return [
+      valores[0]["Empieza_rang1"],
+      valores[0]["Termina_rang1_Empie_rang2"],
+      valores[0]["Termina_rang2_Empie_rang3"],
+      valores[0]["Termina_rang3_Empie_rang4"],
+      valores[0]["Termina_rang4_Empie_rang5"],
+      valores[0]["Termina_rang5"],
+    ];
+  };
+
+  obtenerRangosIndicadores = (indicador, region) => {
+
+    const valores = this.state.rangosIndicadores.filter(
+      (valor) =>
+        valor["variable"] === indicador &&
+        quitarTildes(region).includes(valor["Region"].toUpperCase())
+    );
+    return [
+      valores[0]["Bajo"],
+      valores[0]["Termina_rang1_Empie_rang2"],
+      valores[0]["Termina_rang2_Empie_rang3"],
+      valores[0]["Termina_rang3_Empie_rang4"],
+      valores[0]["Termina_rang4_Empie_rang5"],
+      valores[0]["Alto"],
+    ];
+  };
+
+  buscarCiudad = (ciudadBuscada, tipo, subTipo, columnaCiudad) => {
+    let ciudadEncontrada = tipo.find((ciudad) =>
+      quitarTildes(ciudad[columnaCiudad].toUpperCase()).includes(
+        quitarTildes(ciudadBuscada.urbano.toUpperCase())
       )
     );
-  }
 
-  if (!ciudadEncontrada) {
-    ciudadEncontrada = medida.find((ciudad) =>
-      quitarTildes(ciudadBuscada.urbano.toUpperCase()).includes(
-        quitarTildes(ciudad["Entidad urbana"].toUpperCase())
-      )
-    );
-  }
-  return ciudadEncontrada[subMedida];
-  }
+    if (!ciudadEncontrada) {
+      ciudadEncontrada = tipo.find((ciudad) =>
+        quitarTildes(ciudad[columnaCiudad].toUpperCase()).includes(
+          quitarTildes(ciudadBuscada["nombreComuna"].toUpperCase())
+        )
+      );
+    }
 
-  opcionesDeMedida = () => {
-    if (this.state.medida == "Previsión") {
+    if (!ciudadEncontrada) {
+      ciudadEncontrada = tipo.find((ciudad) =>
+        quitarTildes(ciudadBuscada.urbano.toUpperCase()).includes(
+          quitarTildes(ciudad[columnaCiudad].toUpperCase())
+        )
+      );
+    }
+    return ciudadEncontrada[subTipo];
+  };
+
+  opcionesDeTipo = () => {
+    if (this.state.tipo == "Previsión") {
       return <option value="Previsión">Previsión</option>;
     }
-    if (this.state.medida == "Dimensión") {
+    if (this.state.tipo == "Dimensión") {
       // Usamos un Set para almacenar dimensiones únicas
       const dimensionesUnicas = new Set();
 
@@ -189,15 +353,15 @@ export default class AnalisisTerritorio extends React.Component {
 
       return (
         <>
-          <option>Seleccionar Dimensión</option>
+          <option value="" >Seleccionar Dimensión</option>
           {opcionesDimensiones}
         </>
       );
     }
-    if (this.state.medida === "Servicio") {
+    if (this.state.tipo === "Servicio") {
       return (
         <>
-          <option>Seleccionar Servicio</option>
+          <option value="">Seleccionar Servicio</option>
           {this.state.nombreIndicadores.map((indicador) => {
             return (
               <option
@@ -211,7 +375,7 @@ export default class AnalisisTerritorio extends React.Component {
         </>
       );
     }
-    return <option> Seleccionar medida</option>;
+    return <option> Seleccionar tipo</option>;
   };
 
   render() {
@@ -219,23 +383,23 @@ export default class AnalisisTerritorio extends React.Component {
     return (
       <div className="analisisTerritorio p-1">
         <Row className="text-center pt-4">
-          <h3 className="titulos-dashboard">ANÁLISIS POR TERRITORIO</h3>
-          <h3 className="titulos-dashboard">TERRITORIO: REGIÓN/CIUDAD</h3>
+          <h3 className="titulos-dashboard">ANÁLISIS POR CIUDAD</h3>
         </Row>
         <Container>
           <Row className="p-1 analisis-big-box">
-            <Col lg className="analisis-boxs m-3 py-3">
+            <Col xl className="analisis-boxs m-3 py-3">
               <div
                 className="d-flex flex-column justify-content-between"
                 style={{ height: "100%" }}
               >
                 <h3 className="titulos-dashboard p-2">PANEL DE CONTROL</h3>
                 <div className="p-2">
-                  ZONA URBANA
+                  ENTIDAD URBANA
                   <Multiselect
                     selectedValues={this.state.ciudad}
                     onSelect={(e) => {
                       this.setState({ ciudad: e });
+                      this.cambiarValores(this.state.subTipo);
                     }}
                     options={listaZonasUrbanas}
                     displayValue="urbano"
@@ -253,19 +417,19 @@ export default class AnalisisTerritorio extends React.Component {
                   />
                 </div>
                 <div className="p-2 ">
-                  MEDIDA
+                  TIPO
                   <Form.Select
                     aria-label="Default select"
                     onChange={(e) => {
-                      this.setState({ medida: e.target.value });
+                      this.setState({ tipo: e.target.value });
                       if (e.target.value == "Previsión") {
-                        this.setState({ subMedida: e.target.value });
+                        this.setState({ subTipo: e.target.value });
                         this.cambiarValores(e.target.value);
                       }
                     }}
-                    value={this.state.medida}
+                    value={this.state.tipo}
                   >
-                    <option>Medida</option>
+                    <option>Tipo</option>
                     <option value="Previsión">Previsión</option>
                     <option value="Dimensión">Dimensión</option>
                     <option value="Servicio">Servicio</option>
@@ -274,18 +438,18 @@ export default class AnalisisTerritorio extends React.Component {
 
                 <div className="p-2">
                   SELECCIONAR{" "}
-                  {this.state.medida != ""
-                    ? this.state.medida.toUpperCase()
+                  {this.state.tipo != ""
+                    ? this.state.tipo.toUpperCase()
                     : "MEDIDA"}
                   <Form.Select
                     aria-label="Default select"
-                    value={this.state.subMedida}
+                    value={this.state.subTipo}
                     onChange={(e) => {
-                      this.setState({ subMedida: e.target.value });
+                      this.setState({ subTipo: e.target.value });
                       this.cambiarValores(e.target.value);
                     }}
                   >
-                    {this.opcionesDeMedida()}
+                    {this.opcionesDeTipo()}
                   </Form.Select>
                 </div>
                 <div className="p-2 py-3">
@@ -294,8 +458,8 @@ export default class AnalisisTerritorio extends React.Component {
                       className="color-terciario w-100"
                       onClick={() => {
                         this.setState({
-                          medida: "",
-                          subMedida: "",
+                          tipo: "",
+                          subTipo: "",
                           ciudad: "",
                         });
                         this.cambiarValores();
@@ -308,7 +472,7 @@ export default class AnalisisTerritorio extends React.Component {
                 </div>
               </div>
             </Col>
-            <Col lg className="analisis-boxs m-3">
+            <Col xl className="analisis-boxs m-3">
               <div>
                 <ValoresAnalisis
                   valor={this.state.valores.valor}
@@ -321,11 +485,15 @@ export default class AnalisisTerritorio extends React.Component {
               </div>
             </Col>
             <Col
-              lg
+              xl
               className="analisis-boxs m-3"
               style={{ padding: "0px", minHeight: "358.294px" }}
             >
-              <MapaAnalisis />
+              <MapaAnalisis 
+              ciudad={this.state.ciudad}
+              valor={this.state.valores.valor}
+              rangos={this.state.valores.rangos}
+              />
             </Col>
           </Row>
         </Container>

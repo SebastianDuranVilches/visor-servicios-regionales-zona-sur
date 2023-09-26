@@ -39,13 +39,16 @@ export default class ValoresAnalisis extends React.Component {
     return (
       <div>
         <h3 className="titulos-dashboard text-center pt-3">
-          Valores de Análisis
+          Valores de entidad
         </h3>
+        <h4 className="titulos-dashboard text-center pt-3">
+          Valor de la distribución de los datos
+        </h4>
         <div className="d-flex justify-content-between flex-wrap p-1 text-center">
           <Card className="mb-2" style={{ width: "100%" }}>
             <Card.Body>
               <Card.Title>Valor</Card.Title>
-              <Card.Text>{this.state.valor}</Card.Text>
+              <Card.Text>{this.state.valor.toFixed(4)}</Card.Text>
             </Card.Body>
           </Card>
 
@@ -56,28 +59,28 @@ export default class ValoresAnalisis extends React.Component {
             <Card className="mb-2" style={{ width: "49%" }}>
               <Card.Body>
                 <Card.Title>Mínimo</Card.Title>
-                <Card.Text>{this.state.minimo}</Card.Text>
+                <Card.Text>{this.state.minimo.toFixed(4)}</Card.Text>
               </Card.Body>
             </Card>
 
             <Card className="mb-2" style={{ width: "49%" }}>
               <Card.Body>
                 <Card.Title>Máximo</Card.Title>
-                <Card.Text>{this.state.maximo}</Card.Text>
+                <Card.Text>{this.state.maximo.toFixed(4)}</Card.Text>
               </Card.Body>
             </Card>
 
             <Card style={{ width: "49%" }}>
               <Card.Body>
                 <Card.Title>Mediana</Card.Title>
-                <Card.Text>{this.state.mediana}</Card.Text>
+                <Card.Text>{this.state.mediana.toFixed(4)}</Card.Text>
               </Card.Body>
             </Card>
 
             <Card style={{ width: "49%" }}>
               <Card.Body>
                 <Card.Title>Promedio</Card.Title>
-                <Card.Text>{this.state.promedio}</Card.Text>
+                <Card.Text>{this.state.promedio.toFixed(4)}</Card.Text>
               </Card.Body>
             </Card>
           </div>
