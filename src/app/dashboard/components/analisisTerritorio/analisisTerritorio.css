@@ -93,7 +93,7 @@
 
 /* Estilos para el color "Alto" */
 .color.alto-ciudad {
-  background-color: #ff0000; /* Color rojo para "Alto" */
+  background-color: #005cfa; /* Color rojo para "Alto" */
   width: 20px;
   height: 20px;
   margin-right: 5px;
@@ -101,35 +101,35 @@
 
 /* Estilos para el color "Alto" */
 .color.casi-alto-ciudad {
-  background-color: #ff4800; /* Color rojo para "Alto" */
+  background-color: #95b8f6; /* Color rojo para "Alto" */
   width: 20px;
   height: 20px;
 }
 
 /* Estilos para el color "Medio-Alto" */
 .color.medio-alto-ciudad {
-  background-color: #fab32e; /* Color naranja para "Medio-Alto" */
+  background-color: #add5fa; /* Color naranja para "Medio-Alto" */
   width: 20px;
   height: 20px;
 }
 
 /* Estilos para el color "Medio" */
 .color.medio-ciudad {
-  background-color: #ffff00; /* Color amarillo para "Medio" */
+  background-color: #f9d99a; /* Color amarillo para "Medio" */
   width: 20px;
   height: 20px;
 }
 
 /* Estilos para el color "Medio-Bajo" */
 .color.medio-bajo-ciudad {
-  background-color: #008000; /* Color verde para "Medio-Bajo" */
+  background-color: #f9a59a; /* Color verde para "Medio-Bajo" */
   width: 20px;
   height: 20px;
 }
 
 /* Estilos para el color "Bajo" */
 .color.bajo-ciudad {
-  background-color: #0000ff; /* Color azul para "Bajo" */
+  background-color: #fa5f49; /* Color azul para "Bajo" */
   width: 20px;
   height: 20px;
 }

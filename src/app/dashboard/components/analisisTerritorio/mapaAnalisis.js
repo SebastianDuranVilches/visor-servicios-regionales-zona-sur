@@ -136,63 +136,62 @@ export default class MapaAnalisis extends React.Component {
       },
       () => {
         this.buscarPosicion();
-        this.setState({marcas: []}, () => { this.setState({marcas: this.crearCircleMarkers()}); })
+        this.setState({ marcas: [] }, () => {
+          this.setState({ marcas: this.crearCircleMarkers() });
+        });
       }
     );
   }
-  
 
   buscarPosicion() {
-      // Encuentra la geometría correspondiente a la ciudad en el archivo GeoJSON
-      const ciudadGeometry = geoJsonData.features.find(
-        (feature) => this.state.ciudad[0].urbano.includes(feature.properties.URBANO)
-      );
+    // Encuentra la geometría correspondiente a la ciudad en el archivo GeoJSON
+    const ciudadGeometry = geoJsonData.features.find((feature) =>
+      this.state.ciudad[0].urbano.includes(feature.properties.URBANO)
+    );
 
-      console.log(this.state.ciudad[0].urbano);
-      console.log(ciudadGeometry);
+    console.log(this.state.ciudad[0].urbano);
+    console.log(ciudadGeometry);
 
-      if (ciudadGeometry) {
-        // Extrae las coordenadas de la geometría
-        var coordinates = [0, 0];
-        if (ciudadGeometry.geometry.type === "Polygon") {
-          coordinates = calcularCentroPoligono(ciudadGeometry);
-        } else {
-          console.log(this.state.ciudad[0].urbano);
-          coordinates = calcularCentroMultiPoligonos(ciudadGeometry);
-        }
+    if (ciudadGeometry) {
+      // Extrae las coordenadas de la geometría
+      var coordinates = [0, 0];
+      if (ciudadGeometry.geometry.type === "Polygon") {
+        coordinates = calcularCentroPoligono(ciudadGeometry);
+      } else {
+        console.log(this.state.ciudad[0].urbano);
+        coordinates = calcularCentroMultiPoligonos(ciudadGeometry);
+      }
 
-        coordinates = [coordinates[1], coordinates[0]];
-        this.setState({ coordenadas: coordinates }, () => {
-          console.log(this.state.coordenadas);
-        });
-      } 
+      coordinates = [coordinates[1], coordinates[0]];
+      this.setState({ coordenadas: coordinates }, () => {
+        console.log(this.state.coordenadas);
+      });
+    }
   }
 
   crearCircleMarkers() {
-    
-    var color = "blue";
+    var color = "grey";
 
-        if (this.state.rangos) {
-          if (this.state.valor > this.state.rangos[0]) {
-            color = "#0000FF";
-          }
-          if (this.state.valor > this.state.rangos[1]) {
-            color = "#008000";
-          }
-          if (this.state.valor > this.state.rangos[2]) {
-            color = "#FFFF00";
-          }
-          if (this.state.valor > this.state.rangos[3]) {
-            color = "#fab32e";
-          }
-          if (this.state.valor > this.state.rangos[4]) {
-            color = "#ff4800";
-          }
-          if (this.state.valor > this.state.rangos[5]) {
-            color = "#FF0000";
-          }
-
-        }
+    if (this.state.rangos) {
+      if (this.state.valor > this.state.rangos[0]) {
+        color = "#fa5f49";
+      }
+      if (this.state.valor > this.state.rangos[1]) {
+        color = "#f9a59a";
+      }
+      if (this.state.valor > this.state.rangos[2]) {
+        color = "#f9d99a";
+      }
+      if (this.state.valor > this.state.rangos[3]) {
+        color = "#add5fa";
+      }
+      if (this.state.valor > this.state.rangos[4]) {
+        color = "#95b8f6";
+      }
+      if (this.state.valor > this.state.rangos[5]) {
+        color = "#005cfa";
+      }
+    }
 
     console.log(color);
     // Crea un CircleMarker para la ciudad
@@ -211,8 +210,8 @@ export default class MapaAnalisis extends React.Component {
     );
   }
 
-  obtenerMarca(){
-    if(this.state.ciudad.urbano){
+  obtenerMarca() {
+    if (this.state.ciudad.urbano) {
       return this.crearCircleMarkers();
     }
   }
@@ -230,7 +229,17 @@ export default class MapaAnalisis extends React.Component {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <GeoJSON data={geoJsonData} />
+        <GeoJSON
+          data={geoJsonData}
+          style={(feature) => ({
+            fillColor: "grey", // Color predeterminado si no se proporciona uno
+            weight: 2,
+            opacity: 1,
+            color: "grey",
+            dashArray: "2",
+            fillOpacity: 0.3,
+          })}
+        />
         <div className="windrose-container">
           <WindroseControl />
           {/* Agrega el componente del rosa de los vientos */}

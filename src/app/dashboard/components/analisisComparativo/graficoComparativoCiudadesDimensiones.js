@@ -44,37 +44,37 @@ export default class GradicoComparativoCiudadesDimensiones extends React.Compone
                 {
                   from: 1,
                   to: 2,
-                  color: "#5A1A16",
+                  color: "#fa5f49",
                   name: "Rango 1",
                 },
                 {
                   from: 3,
                   to: 4,
-                  color: "#4B3134",
+                  color: "#f9a59a",
                   name: "Rango 2",
                 },
                 {
                   from: 5,
                   to: 6,
-                  color: "#2E3135",
+                  color: "#f9d99a",
                   name: "Rango 3",
                 },
                 {
                   from: 7,
                   to: 8,
-                  color: "#64464A",
+                  color: "#add5fa",
                   name: "Rango 4",
                 },
                 {
                   from: 9,
                   to: 10,
-                  color: "#66AEAE",
+                  color: "#95b8f6",
                   name: "Rango 5",
                 },
                 {
                   from: 11,
                   to: Infinity, // Establece el último rango como infinito
-                  color: "#FF5733",
+                  color: "#005cfa",
                   name: "Rango 6",
                 },
               ],

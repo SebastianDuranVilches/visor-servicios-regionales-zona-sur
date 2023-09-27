@@ -13,7 +13,7 @@ const RadarChartAnalisis = dynamic(() => import("./radarChart"), {
   ssr: false,
 });
 
-//https://www.google.com/search?q=gama+colores+pasteles&oq=gama+colores+pasteles&gs_lcrp=EgZjaHJvbWUyCQgAEEUYORiABDIICAEQABgWGB4yCAgCEAAYFhgeMggIAxAAGBYYHjIICAQQABgWGB4yCAgFEAAYFhgeMggIBhAAGBYYHjIICAcQABgWGB7SAQg0NTI1ajBqN6gCALACAA&sourceid=chrome&ie=UTF-8#vhid=kAsNnUisJ8zz9M&vssid=l
+
 
 function quitarTildes(cadena) {
   const tildes = {

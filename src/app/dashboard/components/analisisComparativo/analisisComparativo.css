@@ -83,7 +83,7 @@
 
 /* Estilos para el color "Alto" */
 .color.alto {
-  background-color: #FF0000; /* Color rojo para "Alto" */
+  background-color: #005cfa; /* Color rojo para "Alto" */
   width: 20px;
   height: 20px;
   margin-right: 5px;
@@ -91,7 +91,7 @@
 
 /* Estilos para el color "Alto" */
 .color.casi-alto {
-  background-color: #ff4800; /* Color rojo para "Alto" */
+  background-color: #95b8f6; /* Color rojo para "Alto" */
   width: 20px;
   height: 20px;
   margin-right: 5px;
@@ -100,7 +100,7 @@
 
 /* Estilos para el color "Medio-Alto" */
 .color.medio-alto {
-  background-color: #fab32e; /* Color naranja para "Medio-Alto" */
+  background-color: #add5fa; /* Color naranja para "Medio-Alto" */
   width: 20px;
   height: 20px;
   margin-right: 5px;
@@ -109,7 +109,7 @@
 
 /* Estilos para el color "Medio" */
 .color.medio {
-  background-color: #FFFF00; /* Color amarillo para "Medio" */
+  background-color: #f9d99a; /* Color amarillo para "Medio" */
   width: 20px;
   height: 20px;
   margin-right: 5px;
@@ -118,7 +118,7 @@
 
 /* Estilos para el color "Medio-Bajo" */
 .color.medio-bajo {
-  background-color: #008000; /* Color verde para "Medio-Bajo" */
+  background-color: #f9a59a; /* Color verde para "Medio-Bajo" */
   width: 20px;
   height: 20px;
   margin-right: 5px;
@@ -128,7 +128,7 @@
 
 /* Estilos para el color "Bajo" */
 .color.bajo {
-  background-color: #0000FF; /* Color azul para "Bajo" */
+  background-color: #fa5f49; /* Color azul para "Bajo" */
   width: 20px;
   height: 20px;
   margin-right: 5px;

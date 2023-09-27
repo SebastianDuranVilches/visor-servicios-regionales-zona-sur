@@ -13,7 +13,7 @@ import {
 import "leaflet/dist/leaflet.css";
 import geoJsonData from "../../../../../public/data/Mancha_Urbana_2017.json";
 import { Form } from "react-bootstrap";
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const position = [-38.99021947302409, -72.64751008365442];
 
@@ -130,7 +130,7 @@ export default class MapaComparativo extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps,prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.ciudades !== prevProps.ciudades) {
       this.setState({
         ciudades: this.props.ciudades.map((ciudad) => ciudad.urbano),
@@ -151,8 +151,10 @@ export default class MapaComparativo extends React.Component {
         rangos: this.props.rangos,
       });
     }
-    if (this.state.servicio !== prevState.servicio ||
-      this.state.ciudades !== prevState.ciudades) {
+    if (
+      this.state.servicio !== prevState.servicio ||
+      this.state.ciudades !== prevState.ciudades
+    ) {
       const marcas = this.crearCircleMarkers();
       this.setState({ marcas });
     }
@@ -233,28 +235,27 @@ export default class MapaComparativo extends React.Component {
           ciudadGeometry.properties.NOM_REGION
         );
 
-        var color = "blue";
+        var color = "grey";
 
         if (rango) {
           if (valorServicio > rango.bajo) {
-            color = "#0000FF";
+            color = "#fa5f49";
           }
           if (valorServicio > rango.tbajo) {
-            color = "#008000";
+            color = "#f9a59a";
           }
           if (valorServicio > rango.tmbajo) {
-            color = "#FFFF00";
+            color = "#f9d99a";
           }
           if (valorServicio > rango.tmedio) {
-            color = "#fab32e";
+            color = "#add5fa";
           }
           if (valorServicio > rango.tmalto) {
-            color = "#ff4800";
+            color = "#95b8f6";
           }
           if (valorServicio > rango.talto) {
-            color = "#FF0000";
+            color = "#005cfa";
           }
-
         }
         // Crea un CircleMarker para la ciudad
         return (
@@ -278,8 +279,6 @@ export default class MapaComparativo extends React.Component {
   }
 
   render() {
-
-
     return (
       <MapContainer
         center={position}
@@ -292,7 +291,17 @@ export default class MapaComparativo extends React.Component {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <GeoJSON data={geoJsonData} />
+        <GeoJSON
+          data={geoJsonData}
+          style={(feature) => ({
+            fillColor: "grey", // Color predeterminado si no se proporciona uno
+            weight: 2,
+            opacity: 1,
+            color: "grey",
+            dashArray: "2",
+            fillOpacity: 0.3,
+          })}
+        />
         <div className="windrose-container">
           <WindroseControl />{" "}
           {/* Agrega el componente del rosa de los vientos */}
@@ -332,8 +341,9 @@ export default class MapaComparativo extends React.Component {
         <div className="select-container">
           <Form.Select
             aria-label="Default select"
-            onChange={(e) => {this.setState({ servicio: e.target.value });
-            this.setState({ marcas: [] });
+            onChange={(e) => {
+              this.setState({ servicio: e.target.value });
+              this.setState({ marcas: [] });
             }}
           >
             <option key={1}>Seleccionar</option>
