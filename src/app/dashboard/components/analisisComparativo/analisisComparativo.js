@@ -339,25 +339,13 @@ export default class AnalisisComparativo extends React.Component {
       <div className="analisisComparativo p-1 pt-4  mt-3">
         <h3 className="titulos-dashboard text-center">ANÁLISIS COMPARATIVO</h3>
         <Container>
-          <Row>
-            <Col
-              className="analisis-boxs m-3"
-              style={{ padding: "0px", minHeight: "358.294px" }}
-            >
-              <MapaComparativo 
-              ciudades={this.state.selectedUrbanosServicios} 
-              servicios={this.state.comparativoDimensiones}
-              dataServicios={this.state.valorPorCiudadIndicador}
-              rangos={this.state.rangosIndicadores}
-              />
-            </Col>
-          </Row>
           <Row className="fila-comparativo">
             <Col lg className="analisis-boxs m-3 py-3 columna-comparativo">
               <GradicoComparativoCiudadesDimensiones
                 ciudades={this.state.selectedUrbanosServicios}
                 servicios={this.state.valorPorCiudadIndicador}
                 listaDeServiciosAMostrar={this.state.comparativoDimensiones}
+                rangos={this.state.rangosIndicadores}
               />
             </Col>
             <Col
@@ -365,18 +353,19 @@ export default class AnalisisComparativo extends React.Component {
               className="analisis-boxs m-3 py-3 panel-comparativo panle-comparativo-ancho-responsivo"
               style={{ maxWidth: "358.294px" }}
             >
-              <div
-                className="d-flex flex-column"
-              >
+              <div className="d-flex flex-column">
                 <div className="p-2">
                   <a>
-                    <Button className="color-terciario w-100" onClick={() => {
-                      this.setState({
-                        comparativoDimensiones: [],
-                        selectedUrbanosServicios: [],
-                      });
-                    }}>
-                      <img src="./plusIcon.svg" alt="Plus Icon"/> Limpiar
+                    <Button
+                      className="color-terciario w-100"
+                      onClick={() => {
+                        this.setState({
+                          comparativoDimensiones: [],
+                          selectedUrbanosServicios: [],
+                        });
+                      }}
+                    >
+                      <img src="./plusIcon.svg" alt="Plus Icon" /> Limpiar
                       gráfico y mapa
                     </Button>
                   </a>
@@ -393,7 +382,11 @@ export default class AnalisisComparativo extends React.Component {
                     selectionLimit={10}
                     showCheckbox
                     style={{
-                      chips: { background: "#634F4E", zIndex: -1000, display: "none" },
+                      chips: {
+                        background: "#634F4E",
+                        zIndex: -1000,
+                        display: "none",
+                      },
                       searchBox: {
                         /*maxHeight:"74px"*/
                       },
@@ -413,7 +406,11 @@ export default class AnalisisComparativo extends React.Component {
                       selectionLimit={7}
                       showCheckbox
                       style={{
-                        chips: { background: "#634F4E", zIndex: -1000, display: "none" },
+                        chips: {
+                          background: "#634F4E",
+                          zIndex: -1000,
+                          display: "none",
+                        },
                         searchBox: {
                           /*maxHeight:"74px"*/
                         },
@@ -424,7 +421,20 @@ export default class AnalisisComparativo extends React.Component {
               </div>
             </Col>
           </Row>
-          <hr/>
+          <Row>
+            <Col
+              className="analisis-boxs m-3"
+              style={{ padding: "0px", minHeight: "358.294px" }}
+            >
+              <MapaComparativo
+                ciudades={this.state.selectedUrbanosServicios}
+                servicios={this.state.comparativoDimensiones}
+                dataServicios={this.state.valorPorCiudadIndicador}
+                rangos={this.state.rangosIndicadores}
+              />
+            </Col>
+          </Row>
+          <hr />
           <Row className="fila-comparativo">
             <Col
               lg
@@ -443,17 +453,18 @@ export default class AnalisisComparativo extends React.Component {
               style={{ maxWidth: "388.294px" }}
             >
               <Row>
-                <Col className="analisis-boxs panel-comparativo m-3 py-3"  >
-                  <div
-                    
-                  >
+                <Col className="analisis-boxs panel-comparativo m-3 py-3">
+                  <div>
                     <div className="p-2">
                       <a>
-                        <Button className="color-terciario w-100"onClick={() => {
-                      this.setState({
-                        selectedUrbanosDimensiones: [],
-                      });
-                    }}>
+                        <Button
+                          className="color-terciario w-100"
+                          onClick={() => {
+                            this.setState({
+                              selectedUrbanosDimensiones: [],
+                            });
+                          }}
+                        >
                           <img src="./plusIcon.svg" alt="Plus Icon" /> Limpiar
                           gráfico
                         </Button>
@@ -470,7 +481,11 @@ export default class AnalisisComparativo extends React.Component {
                         groupBy="nombreRegion"
                         showCheckbox
                         style={{
-                          chips: { background: "#634F4E", zIndex: -1000, display: "none" },
+                          chips: {
+                            background: "#634F4E",
+                            zIndex: -1000,
+                            display: "none",
+                          },
                           searchBox: {
                             /*maxHeight:"74px"*/
                           },

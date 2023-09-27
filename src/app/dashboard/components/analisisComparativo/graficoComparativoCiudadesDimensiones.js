@@ -14,13 +14,13 @@ function quitarTildes(cadena) {
     Ó: "O",
     Ú: "U",
   };
-    // Reemplazar tildes
-    cadena = cadena.replace(/[áéíóúÁÉÍÓÚ]/g, (letra) => tildes[letra] || letra);
+  // Reemplazar tildes
+  cadena = cadena.replace(/[áéíóúÁÉÍÓÚ]/g, (letra) => tildes[letra] || letra);
 
-    // Eliminar espacios al final de la cadena
-    cadena = cadena.trim();
-  
-    return cadena;
+  // Eliminar espacios al final de la cadena
+  cadena = cadena.trim();
+
+  return cadena;
 }
 
 export default class GradicoComparativoCiudadesDimensiones extends React.Component {
@@ -28,6 +28,7 @@ export default class GradicoComparativoCiudadesDimensiones extends React.Compone
     super(props);
 
     this.state = {
+      rangos: this.props.rangos,
       options: {
         chart: {
           toolbar: {
@@ -41,34 +42,40 @@ export default class GradicoComparativoCiudadesDimensiones extends React.Compone
             colorScale: {
               ranges: [
                 {
-                  from: 0,
-                  to: 19,
+                  from: 1,
+                  to: 2,
                   color: "#5A1A16",
-                  name: "Low",
+                  name: "Rango 1",
                 },
                 {
-                  from: 20,
-                  to: 39,
+                  from: 3,
+                  to: 4,
                   color: "#4B3134",
-                  name: "Low Medium",
+                  name: "Rango 2",
                 },
                 {
-                  from: 40,
-                  to: 59,
+                  from: 5,
+                  to: 6,
                   color: "#2E3135",
-                  name: "Medium",
+                  name: "Rango 3",
                 },
                 {
-                  from: 60,
-                  to: 90,
+                  from: 7,
+                  to: 8,
                   color: "#64464A",
-                  name: "High Medium",
+                  name: "Rango 4",
                 },
                 {
-                  from: 91,
-                  to: 10000,
+                  from: 9,
+                  to: 10,
                   color: "#66AEAE",
-                  name: "High",
+                  name: "Rango 5",
+                },
+                {
+                  from: 11,
+                  to: Infinity, // Establece el último rango como infinito
+                  color: "#FF5733",
+                  name: "Rango 6",
                 },
               ],
             },
@@ -87,6 +94,27 @@ export default class GradicoComparativoCiudadesDimensiones extends React.Compone
             (servicios) => servicios["Indicador o variable"]
           ),
         },
+        tooltip: {
+          custom: function ({seriesIndex, dataPointIndex, w}) {
+            // `seriesIndex` te dará el índice de la serie actual
+            // `dataPointIndex` te dará el índice del punto de datos actual
+            // `w.config.series[seriesIndex].data[dataPointIndex]` te dará acceso a los datos específicos en ese punto
+
+            // Aquí puedes construir tu propio contenido personalizado para el tooltip
+
+            const dataPoint = w.config.series[seriesIndex].data[dataPointIndex];
+            const customTooltipContent = `
+            <div>
+             Serie: ${w.config.series[seriesIndex].name}
+            </div>
+           <div>
+              Valor: ${w.config.series[seriesIndex].data[dataPointIndex].valor}
+            </div>
+           `;
+
+            return customTooltipContent;
+          },
+        },
       },
       series: this.generateData(props),
     };
@@ -102,6 +130,7 @@ export default class GradicoComparativoCiudadesDimensiones extends React.Compone
 
     for (let i = 0; i < cities.length; i++) {
       const cityData = [];
+      const valorRango = [];
       for (let j = 0; j < props.listaDeServiciosAMostrar.length; j++) {
         let ciudadEncontrada = props.servicios.find((ciudad) =>
           quitarTildes(ciudad["Entidad urbana"].toUpperCase()).includes(
@@ -110,34 +139,72 @@ export default class GradicoComparativoCiudadesDimensiones extends React.Compone
         );
 
         if (!ciudadEncontrada) {
-          console.log("anterior");
           ciudadEncontrada = props.servicios.find((ciudad) =>
-          quitarTildes(ciudad["Entidad urbana"].toUpperCase()).includes(
-            quitarTildes(cities[i].nombreComuna.toUpperCase())
-          )
-        );
+            quitarTildes(ciudad["Entidad urbana"].toUpperCase()).includes(
+              quitarTildes(cities[i].nombreComuna.toUpperCase())
+            )
+          );
         }
 
         if (!ciudadEncontrada) {
-          console.log("anterior");
           ciudadEncontrada = props.servicios.find((ciudad) =>
-          quitarTildes(cities[i].urbano.toUpperCase()).includes(
-            quitarTildes(ciudad["Entidad urbana"].toUpperCase())
-          )
-        );
+            quitarTildes(cities[i].urbano.toUpperCase()).includes(
+              quitarTildes(ciudad["Entidad urbana"].toUpperCase())
+            )
+          );
         }
 
+        const valor =
+          ciudadEncontrada[props.listaDeServiciosAMostrar[j]["Codificación"]];
 
-        cityData.push(
-          ciudadEncontrada[props.listaDeServiciosAMostrar[j]["Codificación"]]
+        const rangoRegion = this.state.rangos.find(
+          (rango) =>
+            rango.variable ===
+              props.listaDeServiciosAMostrar[j]["Codificación"] &&
+            quitarTildes(cities[i].nombreRegion).includes(
+              rango.Region.toUpperCase()
+            )
         );
+
+        var rango = 1;
+
+        if (rangoRegion) {
+          if (valor > rangoRegion["Bajo"]) {
+            rango = 1;
+          }
+          if (valor > rangoRegion["Termina_rang1_Empie_rang2"]) {
+            rango = 3;
+          }
+          if (valor > rangoRegion["Termina_rang2_Empie_rang3"]) {
+            rango = 5;
+          }
+          if (valor > rangoRegion["Termina_rang3_Empie_rang4"]) {
+            rango = 7;
+          }
+          if (valor > rangoRegion["Termina_rang4_Empie_rang5"]) {
+            rango = 9;
+          }
+          if (valor > rangoRegion["Alto"]) {
+            rango = 11;
+          }
+        }
+
+        valorRango.push(rango);
+        cityData.push({x: cities[i].urbano, y:rango, valor:valor});
+
       }
-      data.push({ name: cities[i].urbano, data: cityData });
+      data.push({
+        name: cities[i].urbano,
+        data: cityData,
+      });
     }
+
     return data;
   };
 
   establecerNuevoGrafico() {
+    const servicios = this.props.listaDeServiciosAMostrar.map((servicio) => servicio["Codificación"])
+
     this.setState((prevState) => ({
       options: {
         ...prevState.options,

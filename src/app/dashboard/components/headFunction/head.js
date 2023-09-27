@@ -19,6 +19,7 @@ export default function HeadFuction() {
                 <h3 className="text-center">
                 FONDECYT 1230159
                 </h3>
+                <hr style={{ color : 'white'}}/>
                 <h2 className="text-center"> Visor de provisión de servicios básicos</h2>
             </Row>            
             </Container>
