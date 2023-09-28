@@ -10,8 +10,11 @@ import {
   GeoJSON,
   useMap,
   CircleMarker,
+  DivIcon,
+  Tooltip,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import "./mapa.css";
 //import "./mapaDeServicios.css";
 //import geoJsonData from "../../datosDePrueba/Mancha_Urbana_2017.json";
 import geoJsonData from "../../../../datosDePrueba/Mancha_Urbana_2017.json";
@@ -144,13 +147,18 @@ export default class MapaAnalisis extends React.Component {
   }
 
   buscarPosicion() {
+    
+    let ciudadGeometry = [];
+
+    try {
     // Encuentra la geometría correspondiente a la ciudad en el archivo GeoJSON
-    const ciudadGeometry = geoJsonData.features.find((feature) =>
+    ciudadGeometry = geoJsonData.features.find((feature) =>
       this.state.ciudad[0].urbano.includes(feature.properties.URBANO)
     );
+    }catch (error){
+      return 0;
+    };
 
-    console.log(this.state.ciudad[0].urbano);
-    console.log(ciudadGeometry);
 
     if (ciudadGeometry) {
       // Extrae las coordenadas de la geometría
@@ -195,23 +203,30 @@ export default class MapaAnalisis extends React.Component {
 
     console.log(color);
     // Crea un CircleMarker para la ciudad
+    try{
     return (
       <CircleMarker
         center={this.state.coordenadas} // Importante: [latitud, longitud]
         radius={30} // Puedes ajustar el tamaño del círculo según tus preferencias
         color={color} // Puedes ajustar el color del círculo
-        fillOpacity={0.1} // Ajusta la opacidad del círculo
+        fillOpacity={0.9} // Ajusta la opacidad del círculo
+        weight= {4}
       >
         <Popup open={true}>
           <h6 className="text-center">{this.state.ciudad[0].urbano}</h6>
           <p className="text-center"> Valor: {this.state.valor}</p>
         </Popup>
+        <Tooltip direction='top' opacity={1} >
+           <span> {this.state.ciudad[0].urbano} </span>
+         </Tooltip>
       </CircleMarker>
-    );
+    );}catch(error){
+      return <></>
+    }
   }
 
   obtenerMarca() {
-    if (this.state.ciudad.urbano) {
+    if (this.state.ciudad) {
       return this.crearCircleMarkers();
     }
   }
@@ -220,7 +235,7 @@ export default class MapaAnalisis extends React.Component {
     return (
       <MapContainer
         center={this.state.coordenadas}
-        zoom={10}
+        zoom={11}
         scrollWheelZoom={false}
         className="mapaDeServicios"
         zoomControl={false}
@@ -233,7 +248,7 @@ export default class MapaAnalisis extends React.Component {
           data={geoJsonData}
           style={(feature) => ({
             fillColor: "grey", // Color predeterminado si no se proporciona uno
-            weight: 2,
+            weight: 3,
             opacity: 1,
             color: "grey",
             dashArray: "2",

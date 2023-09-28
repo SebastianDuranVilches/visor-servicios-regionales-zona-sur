@@ -337,7 +337,7 @@ export default class AnalisisComparativo extends React.Component {
 
     return (
       <div className="analisisComparativo p-1 pt-4  mt-3">
-        <h3 className="titulos-dashboard text-center">ANÁLISIS COMPARATIVO</h3>
+        <h3 className="titulos-dashboard text-center">ANÁLISIS COMPARATIVO ENTRE CIUDADES</h3>
         <Container>
           <Row className="fila-comparativo">
             <Col lg className="analisis-boxs m-3 py-3 columna-comparativo">
@@ -527,8 +527,7 @@ export default class AnalisisComparativo extends React.Component {
                 <Col className="p-3 botones-panel">
                   <a href="http://fmaturana.cl/Fondecyt_1230159">
                     <Button className="color-primario w-100 mb-3">
-                      <img src="./plusIcon.svg" alt="Plus Icon" /> Más
-                      información
+                      <img src="./plusIcon.svg" alt="Plus Icon" /> Más información
                     </Button>
                   </a>
                   <a href="datosTest.json" download="datosTest.json">

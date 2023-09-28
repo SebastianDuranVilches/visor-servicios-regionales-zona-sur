@@ -118,6 +118,11 @@ export default class GraficoComparativoUnServicio extends React.Component {
             enableShades: false,
           },
         },
+        export: {
+          title: {
+            text: "Descargar Gráfica Personalizada", // Personaliza el título del botón de descarga
+          },
+        },
       },
     };
   }

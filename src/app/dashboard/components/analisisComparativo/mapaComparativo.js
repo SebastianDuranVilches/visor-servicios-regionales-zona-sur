@@ -264,7 +264,7 @@ export default class MapaComparativo extends React.Component {
             center={[coordinates[1], coordinates[0]]} // Importante: [latitud, longitud]
             radius={15} // Puedes ajustar el tamaño del círculo según tus preferencias
             color={color} // Puedes ajustar el color del círculo
-            fillOpacity={0.5} // Ajusta la opacidad del círculo
+            fillOpacity={0.9} // Ajusta la opacidad del círculo
           >
             <Popup open={true}>
               <h6 className="text-center">{ciudad}</h6>

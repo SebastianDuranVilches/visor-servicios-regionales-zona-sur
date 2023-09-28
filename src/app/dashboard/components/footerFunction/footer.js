@@ -23,6 +23,7 @@ export default function FooterFunction() {
               <h5 className="text-center">
                 Universidad Patrocinante investigador principal
               </h5>
+              
               <img
                 src="./uach.png"
                 alt="UACh"
@@ -61,9 +62,12 @@ export default function FooterFunction() {
             </Col>
           </Row>
           <Row className="pt-5">
+            
             <p className="text-center">
               Desarrollado por Sebastián Andres Durán Vilches - Septiembre 2023
             </p>
+            <p className="text-center">Consultas o reporte de un error por favor contactar a Dr. Francisco Maturana Investigador Responsable
+del proyecto a francisco.maturana@uach.cl</p>
           </Row>
         </Container>
       </div>

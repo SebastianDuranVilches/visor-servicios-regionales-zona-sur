@@ -392,7 +392,7 @@ export default class AnalisisTerritorio extends React.Component {
                 className="d-flex flex-column justify-content-between"
                 style={{ height: "100%" }}
               >
-                <h3 className="titulos-dashboard p-2">PANEL DE CONTROL</h3>
+                <h3 className="titulos-dashboard p-2">PANEL DE SELECCIÓN</h3>
                 <div className="p-2">
                   ENTIDAD URBANA
                   <Multiselect

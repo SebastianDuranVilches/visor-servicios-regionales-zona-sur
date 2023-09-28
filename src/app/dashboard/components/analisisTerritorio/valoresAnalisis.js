@@ -39,11 +39,8 @@ export default class ValoresAnalisis extends React.Component {
     return (
       <div>
         <h3 className="titulos-dashboard text-center pt-3">
-          Valores de entidad
+        Valor de entidad urbana
         </h3>
-        <h4 className="titulos-dashboard text-center pt-3">
-          Valor de la distribución de los datos
-        </h4>
         <div className="d-flex justify-content-between flex-wrap p-1 text-center">
           <Card className="mb-2" style={{ width: "100%" }}>
             <Card.Body>
@@ -51,7 +48,9 @@ export default class ValoresAnalisis extends React.Component {
               <Card.Text>{this.state.valor.toFixed(4)}</Card.Text>
             </Card.Body>
           </Card>
-
+          <h4 className="titulos-dashboard text-center py-2">
+          Valor de la distribución de los datos
+        </h4>
           <div
             className="d-flex justify-content-between flex-wrap"
             style={{ width: "100%" }}
