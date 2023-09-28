@@ -123,7 +123,7 @@ export default class AnalisisTerritorio extends React.Component {
   cambiarValores = (subTipo) => {
     
     this.setState({ subTipo: subTipo }, () => {
-      if (this.state.tipo == "Previsión" && subTipo !== "") {
+      if (this.state.tipo == "Previsión" && subTipo !== "" && this.state.ciudad[0]) {
         const ciudadEncontrada = this.buscarCiudad(
           this.state.ciudad[0],
           this.state.indiceProvisionCiudad,
@@ -152,7 +152,7 @@ export default class AnalisisTerritorio extends React.Component {
             rangos: rangosIndiceProvision,
           },
         });
-      } else if (this.state.tipo == "Dimensión" && subTipo !== "") {
+      } else if (this.state.tipo == "Dimensión" && subTipo !== "" && this.state.ciudad[0]) {
          // DIMENSIONES
         const ciudadEncontrada = this.buscarCiudad(
           this.state.ciudad[0],
@@ -184,7 +184,7 @@ export default class AnalisisTerritorio extends React.Component {
             rangos: rangosIndiceDimension,
           },
         });
-      } else if (this.state.tipo === "Servicio" && subTipo !== "") {
+      } else if (this.state.tipo === "Servicio" && subTipo !== "" && this.state.ciudad[0]) {
         const subTipo = this.state.subTipo.split("-");
         const ciudadEncontrada = this.buscarCiudad(
           this.state.ciudad[0],
